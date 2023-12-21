@@ -1,0 +1,14 @@
+http:
+  routers:
+    wiki:
+      rule: 
+      entryPoints: websecure
+      tls:
+        certResolver: myresolver
+      service: wiki
+
+  services:
+    wiki:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:8080

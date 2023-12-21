@@ -1,0 +1,31 @@
+{
+  "name": "",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nx run-many --target=dev --all --parallel  --maxParallel=100 ",
+    "format:changed": "npx pretty-quick",
+    "lint:changed": "nx affected --target=lint",
+    "test:changed": "nx affected --target=test",
+    "semantic-release": "semantic-release"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.2.0",
+    "@commitlint/config-conventional": "^17.2.0",
+    "@commitlint/config-nx-scopes": "^17.2.0",
+    "husky": "^8.0.2",
+    "nx": "^15.1.0",
+    "prettier": "^2.5.1",
+    "pretty-quick": "^3.1.3",
+    "semantic-release": "^19.0.5"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pnpm": "^8.6.12"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "name": "auth-server",
+  "version": "1.0.0",
+  "description": "Authentification server for Mektaba",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check:types": "tsc --noEmit",
+    "build": "esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=build --resolve-extensions=.js",
+    "build:docker:prod": "docker build . -t my-fastify-app --build-arg APP_ENV=production",
+    "start": "NODE_OPTIONS='--es-module-specifier-resolution=node' node build",
+    "dev": "NODE_OPTIONS='--es-module-specifier-resolution=node' nodemon | pino-pretty --colorize",
+    "pretest": "npm run build",
+    "test": "NODE_ENV=test vitest run",
+    "test:watch": "NODE_ENV=test vitest -w"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/multer-s3": "^3.0.0",
+    "@types/node": "^16.11.19",
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "esbuild": "^0.14.11",
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "nodemon": "^2.0.15",
+    "pino-pretty": "^8.1.0",
+    "prettier": "^2.5.1",
+    "typescript": "^5.1.6",
+    "vitest": "^0.25.2",
+    "vitest-mongodb": "^0.0.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.385.0",
+    "@fastify/cors": "^8.3.0",
+    "@fastify/helmet": "^11.0.0",
+    "@sinclair/typebox": "^0.30.4",
+    "ajv": "^8.12.0",
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.3.1",
+    "env-schema": "^5.2.0",
+    "express-mongo-sanitize": "^2.2.0",
+    "fastify": "^4.21.0",
+    "fastify-multer": "^2.0.3",
+    "fastify-plugin": "^4.5.1",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.4.2",
+    "multer-s3": "^3.0.1",
+    "uuid": "^9.0.0"
+  }
+}

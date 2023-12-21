@@ -1,0 +1,123 @@
+version: '3.9'
+services:
+  # Traefik reverse proxy
+  reverse-proxy:
+    image: traefik:v2.4
+    container_name: traefik
+    command:
+      - '--api.insecure=true'
+      - '--providers.docker=true'
+      - '--providers.docker.exposedbydefault=false'
+      #- '--providers.file.directory=/etc/traefik/dynamic'
+      - '--providers.file.filename=./config.yaml'
+      - '--entrypoints.web.address=:80'
+      - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
+      - '--entrypoints.web.http.redirections.entrypoint.scheme=https'
+      - '--entrypoints.web.http.redirections.entrypoint.permanent=true'
+      - '--entrypoints.websecure.address=:443'
+      - '--certificatesresolvers.myresolver.acme.tlschallenge=true'
+      - '--certificatesresolvers.myresolver.acme.httpchallenge=true'
+      - '--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web'
+      #- "--certificatesresolvers.myresolver2.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+      - '--certificatesresolvers.myresolver.acme.email=imad.elmahrad98@gmail.com'
+      - '--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json'
+    restart: always
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - './letsencrypt:/letsencrypt'
+      - './config.yaml:/config.yaml'
+    labels:
+      - 'traefik.http.routers.wiki.rule=Host(`wiki.mektaba.imadelmahrad.com`) || Host(`wwww.wiki.mektaba.imadelmahrad.com`)'
+      - 'traefik.http.routers.wiki.tls=true'
+      - 'traefik.http.routers.wiki.tls.certresolver=myresolver'
+      - 'traefik.http.routers.wiki.entrypoints=websecure'
+      - 'traefik.http.routers.wiki.rule=Host(`wiki.mektaba.imadelmahrad.com`)'
+      - 'traefik.http.routers.wiki.middlewares=wiki-redirect-regex'
+      - 'traefik.http.middlewares.wiki-redirect-regex.redirectregex.regex=(.)*'
+      - 'traefik.http.middlewares.wiki-redirect-regex.redirectregex.replacement=http://10.65.44.7:8080'
+      - 'traefik.http.middlewares.wiki-redirect-regex.redirectregex.permanent=false'
+  client:
+    build:
+      context: ./packages/mektaba-client
+      dockerfile: Dockerfile
+    container_name: client
+    depends_on:
+      - auth-server
+      - mektaba-server
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.client.rule=Host(`mektaba.imadelmahrad.com`) || Host(`www.mektaba.imadelmahrad.com`)'
+      - 'traefik.http.routers.client.tls=true'
+      - 'traefik.http.routers.client.entrypoints=websecure'
+      - 'traefik.http.routers.client.tls.certresolver=myresolver'
+      - 'traefik.http.routers.client.middlewares=secured-client'
+      - 'traefik.http.middlewares.myredirect.redirectscheme.scheme=https'
+      - 'traefik.http.middlewares.myredirect.redirectscheme.permanent=true'
+      - 'traefik.http.middlewares.www-redirect.redirectregex.regex=^https://mektaba.imadelmahrad.com/(.*)'
+      - 'traefik.http.middlewares.www-redirect.redirectregex.replacement=https://mektaba.imadelmahrad.com/$${1}'
+      - 'traefik.http.middlewares.www-redirect.redirectregex.permanent=true'
+      - 'traefik.http.middlewares.secured-client.chain.middlewares=www-redirect,myredirect'
+  auth-server:
+    build:
+      context: ./packages/auth-server
+      dockerfile: Dockerfile
+      args:
+        - APP_ENV=production
+    container_name: auth-server
+    depends_on:
+      - mongo
+    ports:
+      - 127.0.0.1:3000:3000
+    restart: always
+  server:
+    build:
+      context: ./packages/server
+      dockerfile: Dockerfile
+      args:
+        - APP_ENV=production
+    container_name: events-server
+    depends_on:
+      - mongo
+    ports:
+      - 127.0.0.1:4000:4000
+    restart: always
+  mongo:
+    image: mongo:6.0-jammy
+    container_name: mongo
+    ports:
+      - 127.0.0.1:27017:27017
+    volumes:
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./db:/data/db
+    restart: always
+    command: --wiredTigerCacheSizeGB 1.5
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_PASSWORD: wikijsrocks
+      POSTGRES_USER: wikijs
+    logging:
+      driver: 'none'
+    restart: unless-stopped
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+  wiki:
+    image: ghcr.io/requarks/wiki:2
+    depends_on:
+      - db
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: wikijs
+      DB_PASS: wikijsrocks
+      DB_NAME: wiki
+    restart: unless-stopped
+    ports:
+      - 8080:3000
