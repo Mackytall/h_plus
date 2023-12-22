@@ -23,6 +23,7 @@ type OfficeHours = {
   export interface CreateCustomer {
     name: string;
     photo?: string;
+    description?: string;
     // isPartner: boolean;
     // isActive: boolean;
     // isActiveInApp: boolean;
