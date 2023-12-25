@@ -14,12 +14,14 @@ import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { Accordion, AccordionDetails, AccordionSummary, FormControl, Grid, IconButton, InputLabel, MenuItem, Select } from '@mui/material';
-import { CustomerTypes, OpeningDays } from '../../types/customer';
+import { CreateCustomer, CreateCustomerMenu, CustomerMenu, CustomerTypes, OpeningDays } from '../../types/customer';
 import { labelizeCustomerType } from '../../utils/funcs';
 import uniqid from 'uniqid';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { customerSchema } from '../../utils/schemas';
+import { useCreateCustomer } from '../../hooks/customers';
+import { displayToast } from '../../helper/toastHelper';
 
 
 const steps = ['Info', 'Détail', 'Menu'];
@@ -46,18 +48,26 @@ interface IMenuFields {
 const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialogProps) => {
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set<number>());
+  const [isOfficeHoursAccordionOpen, setIsOfficeHoursAccordionOpen] = useState<boolean>(true)
 
-  // const addMenuFields = () => {
-  //   let newMenuFields = { image: "", name: "", price: 0, description: "" }
-  //   setMenuFields([...menuFields, newMenuFields])
-  // }
+  const { mutateAsync: createCustomer } = useCreateCustomer({
+    onSuccess: (data) => {
+      displayToast({
+        type: 'success',
+        message: 'Le frigo a été entregistré avec succès',
+        autoClose: 4000,
+      })
+      handleCloseDialog()
+    },
+    onError: (error) =>
+      displayToast({
+        type: 'error',
+        message:
+          error.error || error.message || error ||
+          'Un problème est survenu, veuillez réessayer',
+      }),
 
-  // const removeMenuFields = (index: number) => {
-  //   let data = [...menuFields]
-  //   data.splice(index, 1)
-  //   setMenuFields(data)
-  // }
-
+  })
 
   const {
     handleSubmit,
@@ -66,8 +76,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
     watch,
     reset,
     control,
-    trigger,
-  } = useForm({
+  } = useForm<CreateCustomer>({
     mode: 'onBlur',
     // control:control,
     defaultValues: {
@@ -84,7 +93,9 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
       officeHours: [
         { day: OpeningDays.Lundi, startHour: "", endHour: "" },
       ],
-      menu: [{ image: "", name: "", price: 0, description: "" }]
+      menu: [{ image: "", name: "", price: 0, description: "" }],
+      menuPriceUnit:"€",
+      createdBy: '656f23faeda3351e49d7c53c',
 
     },
     resolver: yupResolver(customerSchema),
@@ -119,30 +130,6 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
     return skipped.has(step);
   };
 
-  const isStepValid = async (step: number) => {
-
-    switch (step) {
-      // case 0:
-      //   return (!errors.name && !errors.mail && !errors.phone && !errors.customerType && !errors.address && !errors.zipCode && !errors.country)
-      case 0:
-        const step0Valid =
-          !errors.name
-        // &&
-        // !errors.mail &&
-        // !errors.phone &&
-        // !errors.customerType &&
-        // !errors.address &&
-        // !errors.zipCode &&
-        // !errors.country;
-
-        console.log('Step 0 validation:', step0Valid);
-        console.log('Errors:', errors);
-
-        return step0Valid;
-      default:
-        return true;
-    }
-  }
   const handleNext = async () => {
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
@@ -179,11 +166,18 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
     setActiveStep(0);
   };
 
-  const onSubmit = (data: any) => {
-   handleNext();
-   if(activeStep === 2) {
-    console.log(data)
-   }
+  const onSubmit = async (data: any) => {
+    handleNext();
+    if (activeStep === 2) {
+      console.log(data)
+      const {photo, ...newData} = data
+      const customer = {
+        ...newData,
+        displayName: newData.name,
+        isActiveInApp: true
+      }
+      await createCustomer({customer})
+    }
   }
 
   return (
@@ -296,7 +290,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                     id="status"
                     {...register('customerType')}
                     required
-                   // error={!!errors.customerType}
+                    // error={!!errors.customerType}
                     // value={selectedStatus || []}
                     label="Type"
                   >
@@ -311,7 +305,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
               <Grid item xs={12} md={8}>
                 <TextField
                   {...register("address")}
-                 // error={!!errors.address}
+                  // error={!!errors.address}
                   required
                   placeholder="Adresse"
                   variant="outlined"
@@ -322,7 +316,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                 <TextField
                   {...register("zipCode")}
                   required
-                //  error={!!errors.zipCode}
+                  //  error={!!errors.zipCode}
                   placeholder="Code Postal"
                   variant="outlined"
                   fullWidth
@@ -332,7 +326,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                 <TextField
                   {...register("city")}
                   required
-                 // error={!!errors.city}
+                  // error={!!errors.city}
                   placeholder="Ville"
                   variant="outlined"
                   fullWidth
@@ -342,7 +336,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                 <TextField
                   {...register("country")}
                   required
-                //  error={!!errors.country}
+                  //  error={!!errors.country}
                   placeholder="Pays"
                   variant="outlined"
                   fullWidth
@@ -365,8 +359,12 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                 />
               </Grid>
               <Grid item xs={12}>
-                <Accordion>
+                <Accordion expanded={isOfficeHoursAccordionOpen}>
                   <AccordionSummary
+                    onClick={() => setIsOfficeHoursAccordionOpen((prevState) => {
+                      console.log(prevState)
+                      return !prevState
+                    })}
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
                     id="panel1a-header"
@@ -395,6 +393,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                             <FormControl fullWidth>
                               <Select
                                 {...register(`officeHours.${index}.day`)}
+                                required
                                 labelId="officeHoursDay-label"
                                 id="officeHoursDay"
                                 value={selectedDay || []}
@@ -446,8 +445,12 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                 <Button variant="outlined" onClick={() => addMenuFields({ image: "", name: "", price: 0, description: "" })}>Ajouter</Button>
               </Grid>
               {
-                menuFields.map((field, index) => (
-                  <Grid item container xs={12} key={field.id}>
+                menuFields.map((field, index) => {
+                  const photo = watch('photo');
+                  const photoPreview = photo?.length > 0 && URL.createObjectURL(photo[0]);
+                
+                 
+                  return  <Grid item container xs={12} key={field.id}>
                     <Grid item xs={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                       <label htmlFor="photo">
                         <div
@@ -526,14 +529,14 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                       </IconButton>
                     </Grid>
                   </Grid>
-                ))
+                })
               }
             </Grid>
           }
 
           {activeStep === steps.length ? (
             <Grid item>
-              <Box sx={{ display: 'flex', flexDirection: 'row', backgroundColor: "blue", pt: 2 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                 <Box sx={{ flex: '1 1 auto' }} />
                 <Button onClick={handleReset}>Reset</Button>
               </Box>

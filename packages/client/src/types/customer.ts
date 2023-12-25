@@ -1,3 +1,13 @@
+export enum OpeningDays {
+  Lundi = 'Lundi',
+  Mardi = 'Mardi',
+  Mercredi = 'Mercredi',
+  Jeudi = 'Jeudi',
+  Vendredi = 'Vendredi',
+  Samedi = 'Samedi',
+  Dimanche = 'Dimanche',
+}
+
 export enum CustomerTypes {
     restaurant = "restaurant",
     butcher = "butcher",
@@ -11,24 +21,30 @@ type OfficeHours = {
   interface CustomerDetail {
   image: string;
   }
-  interface CustomerMenu {
+  export interface CustomerMenu {
+    //_id: string;
     name: string;
     description: string;
     price: number;
-    priceUnit:string;
     image: string;
     }
 
+    export type CreateCustomerMenu = Omit<CustomerMenu, '_id'>  & {
+      image: File[];
+      [key: string]: any;
+    }
 
-  export interface CreateCustomer {
+
+  export interface ICustomer {
+    _id: string;
     name: string;
-    photo?: string;
+    photo?: string | [];
     description?: string;
     // isPartner: boolean;
     // isActive: boolean;
     // isActiveInApp: boolean;
     // isActiveInHccp: boolean;
-    customerTypes: CustomerTypes;
+    customerType: CustomerTypes;
     address: string;
     zipCode: string;
     city: string;
@@ -36,17 +52,19 @@ type OfficeHours = {
     phone: string;
     mail:string;
     officeHours?: OfficeHours[];
-    // detail?: CustomerDetail;
+    detail?: CustomerDetail;
     menu?: CustomerMenu[];
+    menuPriceUnit: string;
     createdBy: string;
+    createdAt: string;
+    updatedAt: string;
   }
   
-  export enum OpeningDays {
-    Lundi = 'Lundi',
-    Mardi = 'Mardi',
-    Mercredi = 'Mercredi',
-    Jeudi = 'Jeudi',
-    Vendredi = 'Vendredi',
-    Samedi = 'Samedi',
-    Dimanche = 'Dimanche',
+  export type CreateCustomer = Omit<
+  ICustomer,
+  '_id' | 'createdAt' | 'updatedAt' 
+  > & {
+    photo: File[];
+    //menu?: CreateCustomerMenu[];
+    [key: string]: any;
   }
