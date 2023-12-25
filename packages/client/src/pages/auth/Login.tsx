@@ -24,7 +24,7 @@ const Form = styled('form')(({ theme }) => ({
 }));
 
 const Login = (props: ILoginProps) => {
-  const { login } = useContext(AuthContext) as UserContextType;
+  // const { login } = useContext(AuthContext) as UserContextType;
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -33,35 +33,38 @@ const Login = (props: ILoginProps) => {
     ...rest
   } = useForm<LoginForm>({ mode: 'onBlur', defaultValues: { email: '', password: '' } });
 
-  const onSubmit = async (data: LoginForm) => {
-    try {
-      const user = await login(data);
-      switch (user.role) {
-        case UserRole.admin:
-          navigate('/admin');
-          break;
-        case UserRole.user:
-          navigate('/dashboard');
-          break;
-        default:
-          throw new Error(
-            'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, réessayer de vous connecter. Si le problème persiste veuillez prendre contact avec nous.'
-          );
-      }
-    } catch (error: any) {
-      console.error(error);
-    }
-  };
+  // const onSubmit = async (data: LoginForm) => {
+  //   try {
+  //     const user = await login(data);
+  //     switch (user.role) {
+  //       case UserRole.admin:
+  //         navigate('/admin');
+  //         break;
+  //       case UserRole.user:
+  //         navigate('/dashboard');
+  //         break;
+  //       default:
+  //         throw new Error(
+  //           'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, réessayer de vous connecter. Si le problème persiste veuillez prendre contact avec nous.'
+  //         );
+  //     }
+  //   } catch (error: any) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
-    <Paper elevation={6} sx={{ padding: '3rem 2rem', width: '50%', borderRadius: '30px' }}>
+    <Paper elevation={6} sx={{ padding: '3rem 5rem', width: '50%',  }}>
+      <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+      <img src="logo.png" width="200" height="200" />
+      </div>
       <FormProvider
         register={register}
         formState={{ errors, ...restFormState }}
         handleSubmit={handleSubmit}
         {...rest}
       >
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form >
           <TextField
             {...register('email', {
               required: { value: true, message: "L'email est obligatoire" },
@@ -94,9 +97,10 @@ const Login = (props: ILoginProps) => {
               },
             }}
           />
-          <Button type="submit" sx={{ alignSelf: 'end' }}>
+          <Button variant="contained" type="submit" fullWidth>
             Se connecter
           </Button>
+          <Button variant="text">Vous avez oublié votre mot de passe ?</Button>
         </Form>
       </FormProvider>
     </Paper>

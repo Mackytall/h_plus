@@ -1,13 +1,12 @@
 import { lazy, ReactNode } from 'react';
 import uniqid from 'uniqid';
 import Customers from '../pages/customers/Customers';
+import Auth from '../pages/auth/Auth';
 
 //import AdminRoute from './AdminRoute';
 //import PrivateRoute from './PrivateRoute';
 const Wrapper = lazy(() => import('../components/Wrapper'));
 // const Auth = lazy(() => import('../pages/auth/Auth'));
-
-
 
 export type Route = {
   id: string;
@@ -16,18 +15,18 @@ export type Route = {
 };
 
 export const routes: Route[] = [
-  // {
-  //   id: uniqid(),
-  //   path: '/',
-  //   component: (
-  //     <Wrapper>
-  //       <Auth />
-  //     </Wrapper>
-  //   ),
-  // },
   {
     id: uniqid(),
     path: '/',
+    component: (
+      <Wrapper>
+        <Auth/>
+      </Wrapper>
+    ),
+  },
+  {
+    id: uniqid(),
+    path: '/customers',
     component: (
       <Wrapper>
         <Customers/>

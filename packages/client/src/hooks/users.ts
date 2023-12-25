@@ -6,7 +6,8 @@ import { FetchSecureReturn, fetchSecure } from '../helper/fetchHelper';
 import { FetchUser, IsTokenValid, IUser, Login, UserAuth, UserDeleted } from '../types/user';
 import { storage } from '../constants';
 
-const usersUrl = urls.users;
+const usersUrl = `${urls.auth}/users`
+
 
 export const useUsers = () =>
   useSecureQuery<IUser[]>(reactQueryKeys.users, {
