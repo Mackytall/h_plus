@@ -28,7 +28,7 @@ const Form = styled('form')(({ theme }) => ({
 }));
 
 const Signup = (props: ISignupProps) => {
- // const { signup } = useContext(AuthContext) as UserContextType;
+  const { signup } = useContext(AuthContext) as UserContextType;
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -51,62 +51,62 @@ const Signup = (props: ISignupProps) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  // const onSubmit = async (data: UserSignup) => {
-  //   setIsLoading(true);
-  //   try {
-  //     let compressedFiles: File[] = [];
-  //     if (data.photo.length > 0) {
-  //       compressedFiles = await Promise.all<File>(
-  //         [data.photo[0]].map((photo) => {
-  //           return new Promise((resolve, reject) => {
-  //             new Compressor(photo, {
-  //               quality: 0.6,
-  //               success: (result: File) => {
-  //                 resolve(result);
-  //               },
-  //               error: (error: Error) => reject(error),
-  //             });
-  //           });
-  //         })
-  //       );
-  //     }
-  //     const newData: UserSignup = {
-  //       ...data,
-  //       photo: compressedFiles as string & File[],
-  //     };
-  //     const form = new FormData();
-  //     for (const key in newData) {
-  //       if (key === 'photo' && compressedFiles.length > 0) {
-  //         form.append(key, newData[key][0], compressedFiles[0].name.toLowerCase());
-  //       } else {
-  //         if (Array.isArray(newData[key])) {
-  //           form.append(key, JSON.stringify(newData[key]));
-  //         } else {
-  //           form.append(key, newData[key]);
-  //         }
-  //       }
-  //     }
+  const onSubmit = async (data: UserSignup) => {
+    setIsLoading(true);
+    try {
+      let compressedFiles: File[] = [];
+      if (data.photo.length > 0) {
+        compressedFiles = await Promise.all<File>(
+          [data.photo[0]].map((photo) => {
+            return new Promise((resolve, reject) => {
+              new Compressor(photo, {
+                quality: 0.6,
+                success: (result: File) => {
+                  resolve(result);
+                },
+                error: (error: Error) => reject(error),
+              });
+            });
+          })
+        );
+      }
+      const newData: UserSignup = {
+        ...data,
+        photo: compressedFiles as string & File[],
+      };
+      const form = new FormData();
+      for (const key in newData) {
+        if (key === 'photo' && compressedFiles.length > 0) {
+          form.append(key, newData[key][0], compressedFiles[0].name.toLowerCase());
+        } else {
+          if (Array.isArray(newData[key])) {
+            form.append(key, JSON.stringify(newData[key]));
+          } else {
+            form.append(key, newData[key]);
+          }
+        }
+      }
 
-  //     const user = await signup(form);
-  //     displayToast({ type: 'success', message: 'Connexion réussie', autoClose: 4000 });
-  //     switch (user.role) {
-  //       case UserRole.admin:
-  //         navigate('/admin');
-  //         break;
-  //       case UserRole.user:
-  //         navigate('/dashboard');
-  //         break;
-  //       default:
-  //         throw new Error(
-  //           'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, veuillez réessayer. Si le problème persiste veuillez prendre contact avec nous.'
-  //         );
-  //     }
-  //   } catch (error) {
-  //     showErrorMessage(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+      const user = await signup(form);
+      displayToast({ type: 'success', message: 'Connexion réussie', autoClose: 4000 });
+      switch (user.role) {
+        case UserRole.admin:
+          navigate('/admin');
+          break;
+        case UserRole.user:
+          navigate('/dashboard');
+          break;
+        default:
+          throw new Error(
+            'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, veuillez réessayer. Si le problème persiste veuillez prendre contact avec nous.'
+          );
+      }
+    } catch (error) {
+      showErrorMessage(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleClickOpen = () => {
     setOpen(true);

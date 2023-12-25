@@ -13,7 +13,7 @@ import PasswordInput from '../../components/PasswordInput';
 export interface ILoginProps {}
 
 type LoginForm = {
-  email: string;
+  username: string;
   password: string;
 };
 
@@ -24,34 +24,34 @@ const Form = styled('form')(({ theme }) => ({
 }));
 
 const Login = (props: ILoginProps) => {
-  // const { login } = useContext(AuthContext) as UserContextType;
+  const { login } = useContext(AuthContext) as UserContextType;
   const navigate = useNavigate();
   const {
     handleSubmit,
     register,
     formState: { errors, ...restFormState },
     ...rest
-  } = useForm<LoginForm>({ mode: 'onBlur', defaultValues: { email: '', password: '' } });
+  } = useForm<LoginForm>({ mode: 'onBlur', defaultValues: { username: '', password: '' } });
 
-  // const onSubmit = async (data: LoginForm) => {
-  //   try {
-  //     const user = await login(data);
-  //     switch (user.role) {
-  //       case UserRole.admin:
-  //         navigate('/admin');
-  //         break;
-  //       case UserRole.user:
-  //         navigate('/dashboard');
-  //         break;
-  //       default:
-  //         throw new Error(
-  //           'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, réessayer de vous connecter. Si le problème persiste veuillez prendre contact avec nous.'
-  //         );
-  //     }
-  //   } catch (error: any) {
-  //     console.error(error);
-  //   }
-  // };
+  const onSubmit = async (data: LoginForm) => {
+    try {
+      const user = await login(data);
+      switch (user.role) {
+        case UserRole.admin:
+          navigate('/admin');
+          break;
+        case UserRole.user:
+          navigate('/dashboard');
+          break;
+        default:
+          throw new Error(
+            'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, réessayer de vous connecter. Si le problème persiste veuillez prendre contact avec nous.'
+          );
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
 
   return (
     <Paper elevation={6} sx={{ padding: '3rem 5rem', width: '50%',  }}>
@@ -64,19 +64,16 @@ const Login = (props: ILoginProps) => {
         handleSubmit={handleSubmit}
         {...rest}
       >
-        <Form >
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            {...register('email', {
-              required: { value: true, message: "L'email est obligatoire" },
-              validate: (value: string) =>
-                isValidEmail(value) ? true : "L'email n'est pas valide",
+            {...register('username', {
+              required: { value: true, message: "Le nom d'utilisateur est obligatoire" },   
             })}
-            error={!!errors.email}
-            helperText={errors.email && errors.email.message}
+            error={!!errors.username}
+            helperText={errors.username && errors.username.message}
             fullWidth
             required
-            type="email"
-            label="Email"
+            label="Nom d'utilisateur"
           />
           <PasswordInput
             color="primary"

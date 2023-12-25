@@ -1,16 +1,16 @@
 export interface IUser {
   _id: string;
-  firstName: string;
+  username: string;
   lastName: string;
+  firstName: string;
   email: string;
-  photo: string;
   role: UserRole;
-  address: string;
-  zipCode: string;
-  city: string;
-  phone: string;
-  likedEvents: string[];
-  createdAt: string;
+  customerId: string;
+  isActive: boolean;
+  photo?: string;
+  password?: string;
+  deletedAt?: Date;
+  createdAt:string;
   updatedAt: string;
 }
 
@@ -26,12 +26,7 @@ export type UserSignup = Omit<
   | '_id'
   | 'createdAt'
   | 'updatedAt'
-  | 'role'
-  | 'address'
-  | 'zipCode'
-  | 'city'
-  | 'phone'
-  | 'likedEvents'
+  
 > & {
   password: string;
   confirmPassword: string;
@@ -49,7 +44,7 @@ export type UpdateUser = Partial<
 };
 
 export type Login = {
-  email: string;
+  username: string;
   password: string;
 };
 

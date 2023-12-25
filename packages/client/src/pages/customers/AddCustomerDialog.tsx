@@ -181,7 +181,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
   }
 
   return (
-    <Dialog open={openDialog} onClose={handleCloseDialog} fullScreen={true} sx={{ width: "80%", height: "50%", margin: "auto", backgroundCOlor: "blue" }} >
+    <Dialog open={openDialog} onClose={handleCloseDialog} fullScreen={true} sx={{ width: "80%", height: "80%", margin: "auto", backgroundCOlor: "blue" }} >
       <DialogTitle>Nouveau</DialogTitle>
       <DialogContent >
         <Stepper activeStep={activeStep}>

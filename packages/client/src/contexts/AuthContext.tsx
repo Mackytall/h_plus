@@ -69,8 +69,9 @@ const AuthProvider = ({ children }: IAuthProviderProps) => {
                   localStorage.setItem(storage.USER_TOKEN, res.data.token);
                   localStorage.setItem(storage.USER_ID, res.data.id);
                   setLoggedOut(false);
+                  console.log(res)
                   const userReq = await fetchUser(res.data.id);
-                  await refetch();
+                 // await refetch();
                   if (userReq.ok && userReq.data) {
                     resolve(userReq.data.user);
                   }

@@ -27,7 +27,7 @@ function App() {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={appTheme}>
         <Suspense fallback={<Splash />}>
-          {/* <AuthProvider> */}
+          <AuthProvider>
             <BrowserRouter>
               <Routes>
                 {routes.map((route) => (
@@ -35,7 +35,7 @@ function App() {
                 ))}
               </Routes>
             </BrowserRouter>
-          {/* </AuthProvider> */}
+          </AuthProvider>
         </Suspense>
       </ThemeProvider>
     </StyledEngineProvider>
