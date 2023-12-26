@@ -9,6 +9,7 @@ RUN apt-get clean
 # Clone repository to container and build
 WORKDIR /source
 COPY . .
+COPY .env.production .env
 
 # Stage 2 - Create the app
 FROM node:18.15.0 as build
