@@ -196,7 +196,6 @@ export const stockSchema = Yup.object().shape({
 export const customerSchema = Yup.object().shape({
    name: Yup.string().required('Le nom est obligatoire'),
   mail: Yup.string().required('Le nom est obligatoire'),
-  phone: Yup.string().required('Le nom est obligatoire'),
  customerType: Yup.string().required('Le nom est obligatoire'),
   address: Yup.string().required('Le nom est obligatoire'),
   zipCode: Yup.string().required('Le nom est obligatoire'),

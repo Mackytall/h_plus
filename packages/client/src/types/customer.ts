@@ -37,13 +37,14 @@ type OfficeHours = {
 
   export interface ICustomer {
     _id: string;
+    incrementalId: string;
     name: string;
     photo?: string | [];
     description?: string;
-    // isPartner: boolean;
-    // isActive: boolean;
-    // isActiveInApp: boolean;
-    // isActiveInHccp: boolean;
+    isPartner: boolean;
+    isActive: boolean;
+    isActiveInApp: boolean;
+    isActiveInHccp: boolean;
     customerType: CustomerTypes;
     address: string;
     zipCode: string;
@@ -62,7 +63,7 @@ type OfficeHours = {
   
   export type CreateCustomer = Omit<
   ICustomer,
-  '_id' | 'createdAt' | 'updatedAt' 
+  '_id' | 'createdAt' | 'updatedAt' | 'incrementalId' | 'isActiveInHccp' | 'isPartner'
   > & {
     photo: File[];
     //menu?: CreateCustomerMenu[];

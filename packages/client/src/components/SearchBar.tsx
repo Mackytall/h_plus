@@ -13,6 +13,7 @@ const SearchBar = ({setSearchQuery}: SearchBarProps) => {
           id="search"
           type="search"
           label="Rechercher un nom"
+          fullWidth
           onChange={(e :any) => {
             setSearchQuery(e.target.value);
           }}

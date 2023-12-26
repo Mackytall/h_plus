@@ -1,7 +1,9 @@
 import { lazy, ReactNode } from 'react';
 import uniqid from 'uniqid';
 import Customers from '../pages/customers/Customers';
+import Dashboard from '../pages/Dashboard';
 import Auth from '../pages/auth/Auth';
+
 
 //import AdminRoute from './AdminRoute';
 //import PrivateRoute from './PrivateRoute';
@@ -15,6 +17,15 @@ export type Route = {
 };
 
 export const routes: Route[] = [
+   {
+    id: uniqid(),
+    path: '/dashboard',
+    component: (
+      <Wrapper>
+        <Dashboard/>
+      </Wrapper>
+    ),
+  },
   {
     id: uniqid(),
     path: '/',
@@ -24,6 +35,7 @@ export const routes: Route[] = [
       </Wrapper>
     ),
   },
+ 
   {
     id: uniqid(),
     path: '/customers',

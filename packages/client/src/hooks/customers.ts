@@ -3,7 +3,7 @@ import { reactQueryKeys } from '../constants/reactQueryKeys';
 import { urls } from '../configurations';
 import { useQueryClient, useMutation } from 'react-query';
 import { fetchSecure } from '../helper/fetchHelper';
-import { CreateCustomer } from "../types/customer";
+import { CreateCustomer, ICustomer } from "../types/customer";
 import { SuccessResponse } from '../types/responses';
 
 const customersUrl = `${urls.auth}/customers`
@@ -36,3 +36,8 @@ export const useCreateCustomer = ({
   );
   return createFridge;
 };
+export const useCustomers = () => 
+  useSecureQuery<ICustomer[]>(reactQueryKeys.customers, {
+    url: `${customersUrl}/all`,
+    path: 'data.customers',
+    method: 'GET',  })

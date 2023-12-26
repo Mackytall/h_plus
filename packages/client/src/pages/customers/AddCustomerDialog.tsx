@@ -12,8 +12,8 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { Accordion, AccordionDetails, AccordionSummary, FormControl, Grid, IconButton, InputLabel, MenuItem, Select } from '@mui/material';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, IconButton, InputLabel, MenuItem, Select } from '@mui/material';
 import { CreateCustomer, CreateCustomerMenu, CustomerMenu, CustomerTypes, OpeningDays } from '../../types/customer';
 import { labelizeCustomerType } from '../../utils/funcs';
 import uniqid from 'uniqid';
@@ -54,7 +54,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
     onSuccess: (data) => {
       displayToast({
         type: 'success',
-        message: 'Le frigo a été entregistré avec succès',
+        message: "L'établissement a été entregistré avec succès",
         autoClose: 4000,
       })
       handleCloseDialog()
@@ -174,15 +174,14 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
       const customer = {
         ...newData,
         displayName: newData.name,
-        isActiveInApp: true
       }
-      await createCustomer({customer})
+     // await createCustomer({customer})
     }
   }
 
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullScreen={true} sx={{ width: "80%", height: "80%", margin: "auto", backgroundCOlor: "blue" }} >
-      <DialogTitle>Nouveau</DialogTitle>
+      <DialogTitle>Création d'un établissement</DialogTitle>
       <DialogContent >
         <Stepper activeStep={activeStep}>
           {steps.map((label, index) => {
@@ -275,7 +274,6 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
               <Grid item xs={12} md={6}>
                 <TextField
                   {...register("phone")}
-                  required
                   error={!!errors.phone}
                   placeholder="Téléphone"
                   variant="outlined"
@@ -342,19 +340,57 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                   fullWidth
                 />
               </Grid>
+              <Grid item xs={6} >
+            <FormControlLabel
+                    control={
+                      <Controller
+                        name="isActive"
+                        control={control}
+                        render={({ field: { value, onChange, ...props } }) => (
+                          <Checkbox
+                            {...props}
+                            checked={value}
+                            onChange={(e) => onChange(e.target.checked)}
+                          />
+                        )}
+                      />
+                    }
+                    label="Activer l'établissement(statut global)"
+                  />
+              </Grid>
+              <Grid item xs={6}>
+              <FormControlLabel
+                    control={
+                      <Controller
+                        name="isActiveInApp"
+                        control={control}
+                        render={({ field: { value, onChange, ...props } }) => (
+                          <Checkbox
+                            {...props}
+                            checked={value}
+                            onChange={(e) => onChange(e.target.checked)}
+                          />
+                        )}
+                      />
+                    }
+                    label="Activer l'établissement dans l'application"
+                  />
+              </Grid>
             </Grid>
           }
           {
             activeStep === 1 &&
             <Grid container spacing={2}>
               <Grid item xs={12}>
+                <Typography variant='h6' component="p" my={2}>Description de l'établissement</Typography>
                 <TextField
                   {...register("description")}
                   //error={!!errors.description}
                   id="outlined-multiline-flexible"
-                  label="Desciption..."
+                  placeholder='Une simple description'
                   multiline
                   fullWidth
+                  minRows={3}
                   maxRows={4}
                 />
               </Grid>
