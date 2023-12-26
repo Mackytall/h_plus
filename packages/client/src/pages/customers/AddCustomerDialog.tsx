@@ -175,7 +175,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
         ...newData,
         displayName: newData.name,
       }
-     // await createCustomer({customer})
+     await createCustomer({customer})
     }
   }
 
