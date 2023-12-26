@@ -34,23 +34,24 @@ const Login = (props: ILoginProps) => {
   } = useForm<LoginForm>({ mode: 'onBlur', defaultValues: { username: '', password: '' } });
 
   const onSubmit = async (data: LoginForm) => {
-    try {
-      const user = await login(data);
-      switch (user.role) {
-        case UserRole.admin:
-          navigate('/admin');
-          break;
-        case UserRole.user:
-          navigate('/dashboard');
-          break;
-        default:
-          throw new Error(
-            'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, réessayer de vous connecter. Si le problème persiste veuillez prendre contact avec nous.'
-          );
-      }
-    } catch (error: any) {
-      console.error(error);
-    }
+    navigate('/customers');
+    // try {
+    //   const user = await login(data);
+    //   switch (user.role) {
+    //     case UserRole.admin:
+    //       navigate('/admin');
+    //       break;
+    //     case UserRole.user:
+    //       navigate('/dashboard');
+    //       break;
+    //     default:
+    //       throw new Error(
+    //         'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, réessayer de vous connecter. Si le problème persiste veuillez prendre contact avec nous.'
+    //       );
+    //   }
+    // } catch (error: any) {
+    //   console.error(error);
+    // }
   };
 
   return (
