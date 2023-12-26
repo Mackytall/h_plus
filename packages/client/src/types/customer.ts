@@ -49,7 +49,7 @@ type OfficeHours = {
     zipCode: string;
     city: string;
     country: string;
-    phone: string;
+    phone?: string;
     mail:string;
     officeHours?: OfficeHours[];
     detail?: CustomerDetail;

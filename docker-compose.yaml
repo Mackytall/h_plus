@@ -30,13 +30,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - './letsencrypt:/letsencrypt'
-      - './config.yaml:/config.yaml'
+meltaba      - './config.yaml:/config.yaml'
     labels:
-      - 'traefik.http.routers.wiki.rule=Host(`wiki.mektaba.imadelmahrad.com`) || Host(`wwww.wiki.mektaba.imadelmahrad.com`)'
+      - 'traefik.http.routers.wiki.rule=Host(`wiki.hplus.imadelmahrad.com`) || Host(`wwww.wiki.hplus.imadelmahrad.com`)'
       - 'traefik.http.routers.wiki.tls=true'
       - 'traefik.http.routers.wiki.tls.certresolver=myresolver'
       - 'traefik.http.routers.wiki.entrypoints=websecure'
-      - 'traefik.http.routers.wiki.rule=Host(`wiki.mektaba.imadelmahrad.com`)'
+      - 'traefik.http.routers.wiki.rule=Host(`wiki.hplus.imadelmahrad.com`)'
       - 'traefik.http.routers.wiki.middlewares=wiki-redirect-regex'
       - 'traefik.http.middlewares.wiki-redirect-regex.redirectregex.regex=(.)*'
       - 'traefik.http.middlewares.wiki-redirect-regex.redirectregex.replacement=http://10.65.44.7:8080'
@@ -48,15 +48,15 @@ services:
     container_name: client
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.client.rule=Host(`mektaba.imadelmahrad.com`) || Host(`www.mektaba.imadelmahrad.com`)'
+      - 'traefik.http.routers.client.rule=Host(`hplus.imadelmahrad.com`) || Host(`www.hplus.imadelmahrad.com`)'
       - 'traefik.http.routers.client.tls=true'
       - 'traefik.http.routers.client.entrypoints=websecure'
       - 'traefik.http.routers.client.tls.certresolver=myresolver'
       - 'traefik.http.routers.client.middlewares=secured-client'
       - 'traefik.http.middlewares.myredirect.redirectscheme.scheme=https'
       - 'traefik.http.middlewares.myredirect.redirectscheme.permanent=true'
-      - 'traefik.http.middlewares.www-redirect.redirectregex.regex=^https://mektaba.imadelmahrad.com/(.*)'
-      - 'traefik.http.middlewares.www-redirect.redirectregex.replacement=https://mektaba.imadelmahrad.com/$${1}'
+      - 'traefik.http.middlewares.www-redirect.redirectregex.regex=^https://hplus.imadelmahrad.com/(.*)'
+      - 'traefik.http.middlewares.www-redirect.redirectregex.replacement=https://hplus.imadelmahrad.com/$${1}'
       - 'traefik.http.middlewares.www-redirect.redirectregex.permanent=true'
       - 'traefik.http.middlewares.secured-client.chain.middlewares=www-redirect,myredirect'
  
