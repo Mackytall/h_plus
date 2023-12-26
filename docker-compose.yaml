@@ -30,7 +30,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - './letsencrypt:/letsencrypt'
-meltaba      - './config.yaml:/config.yaml'
+      - './config.yaml:/config.yaml'
     labels:
       - 'traefik.http.routers.wiki.rule=Host(`wiki.hplus.imadelmahrad.com`) || Host(`wwww.wiki.hplus.imadelmahrad.com`)'
       - 'traefik.http.routers.wiki.tls=true'
