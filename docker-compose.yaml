@@ -37,7 +37,7 @@ services:
       dockerfile: Dockerfile
     container_name: client
     labels:
-      - 'traefik.enable=true's
+      - 'traefik.enable=true'
       - 'traefik.http.routers.client.rule=Host(`hplus.imadelmahrad.com`) || Host(`www.hplus.imadelmahrad.com`)'
       - 'traefik.http.routers.client.tls=true'
       - 'traefik.http.routers.client.entrypoints=websecure'
