@@ -12,16 +12,19 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, IconButton, InputLabel, MenuItem, Select } from '@mui/material';
-import { CreateCustomer, CreateCustomerMenu, CustomerMenu, CustomerTypes, OpeningDays } from '../../types/customer';
+import { CreateCustomer, CreateCustomerMenu, CustomerMenu, CustomerTypes, ICustomer, OpeningDays } from '../../types/customer';
 import { labelizeCustomerType } from '../../utils/funcs';
 import uniqid from 'uniqid';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { customerSchema } from '../../utils/schemas';
-import { useCreateCustomer } from '../../hooks/customers';
+import { saveImage, useCreateCustomer } from '../../hooks/customers';
 import { displayToast } from '../../helper/toastHelper';
+import CustomerMenuComponent from './CustomerMenuComponent';
+import Compressor from 'compressorjs';
+
 
 
 const steps = ['Info', 'Détail', 'Menu'];
@@ -69,14 +72,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
 
   })
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors, ...restState },
-    watch,
-    reset,
-    control,
-  } = useForm<CreateCustomer>({
+  const methods= useForm<CreateCustomer>({
     mode: 'onBlur',
     // control:control,
     defaultValues: {
@@ -88,18 +84,19 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
       zipCode: "",
       city: "",
       country: "France",
-      photo: [],
+      image: [],
       description: "",
       officeHours: [
         { day: OpeningDays.Lundi, startHour: "", endHour: "" },
       ],
-      menu: [{ image: "", name: "", price: 0, description: "" }],
+      menu: [{ image: undefined, name: "", price: 0, description: "" }],
       menuPriceUnit:"€",
       createdBy: '656f23faeda3351e49d7c53c',
 
     },
     resolver: yupResolver(customerSchema),
   });
+  const { handleSubmit, register, watch, reset, control } = methods;
 
   const { fields: officeHoursFields, append: addOfficeHours, remove: removeOfficeHoursFields } = useFieldArray({
     control,
@@ -111,15 +108,17 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
     name: 'menu',
   });
 
-  const photo = watch('photo');
-  const photoPreview = photo?.length > 0 && URL.createObjectURL(photo[0]);
+  const image = watch('image');
+  const imagePreview = image?.length > 0 && URL.createObjectURL(image[0]);
 
   useEffect(
     () => () => {
-      if (photoPreview) URL.revokeObjectURL(photoPreview);
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
     },
-    [photoPreview]
+    [imagePreview]
   );
+
+ 
 
 
   const isStepOptional = (step: number) => {
@@ -166,16 +165,71 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
     setActiveStep(0);
   };
 
-  const onSubmit = async (data: any) => {
+  const getMenuWithImage = async (menu: CreateCustomerMenu[]) => {
+    if (menu.length > 0) {
+      // Use Promise.all to wait for all asynchronous operations to complete
+      await Promise.all(
+        menu.map(async (item: CreateCustomerMenu) => {
+          const menuImageFormData = new FormData();
+  
+          // Compress the image using Compressor library
+          let compressedMenuImage = await Promise.all<File>(
+            [item.image[0]].map((image) => {
+              return new Promise((resolve, reject) => {
+                new Compressor(image, {
+                  quality: 0.6,
+                  success: (result: File) => resolve(result),
+                  error: (error: Error) => reject(error),
+                });
+              });
+            })
+          );
+          menuImageFormData.append('image', compressedMenuImage[0]);  
+          const { image } = await saveImage(menuImageFormData);
+          item.image = image;
+        })
+      );
+    }
+  
+    return menu;
+  };
+  
+
+
+  const onSubmit: SubmitHandler<CreateCustomer>  = async (data: any) => {
     handleNext();
     if (activeStep === 2) {
-      console.log(data)
-      const {photo, ...newData} = data
-      const customer = {
-        ...newData,
-        displayName: newData.name,
-      }
-     await createCustomer({customer})
+
+    let compressedImage: File[] = [];
+    if (data.image.length > 0) {
+      compressedImage = await Promise.all<File>(
+        [data.image[0]].map((image) => {
+          return new Promise((resolve, reject) => {
+            new Compressor(image, {
+              quality: 0.6,
+              success: (result: File) => resolve(result),
+              error: (error: Error) => reject(error),
+            });
+          });
+        })
+      );
+
+    }
+
+    const imageFormData = new FormData();
+    imageFormData.append('image', compressedImage[0])
+   const { image } = await saveImage(imageFormData);
+
+  await getMenuWithImage(data.menu).then(async (menu) => {
+    console.log("menu");
+    console.log(menu);
+    await createCustomer({customer:{
+      ...data,
+      image:image,
+      menu:menu,
+      displayName: data.name 
+    }})
+  })
     }
   }
 
@@ -205,19 +259,21 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
           })}
         </Stepper>
 
+          <FormProvider {...methods}>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+          
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
           {activeStep === 0 &&
             <Grid container spacing={2} >
               <Grid item xs={12} >
-                <label htmlFor="photo">
+                <label htmlFor="image">
                   <div
                     style={
-                      photoPreview
+                      imagePreview
                         ? {
                           height: '140px',
                           width: '140px',
-                          backgroundImage: `url(${photoPreview})`,
+                          backgroundImage: `url(${imagePreview})`,
                           backgroundSize: 'cover',
                           backgroundPosition: 'center',
                           backgroundRepeat: 'no-repeat',
@@ -238,14 +294,14 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                         }
                     }
                   >
-                    {!photoPreview &&
+                    {!imagePreview &&
                       <Typography>Logo</Typography>
                     }
                   </div>
                 </label>
                 <input
-                  {...register('photo')}
-                  id="photo"
+                  {...register('image')}
+                  id="image"
                   type="file"
                   accept="images/*"
                   hidden
@@ -265,7 +321,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                 <TextField
                   {...register("mail")}
                   required
-                  error={!!errors.mail}
+                  //error={!!errors.mail}
                   placeholder="Email"
                   variant="outlined"
                   fullWidth
@@ -274,7 +330,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
               <Grid item xs={12} md={6}>
                 <TextField
                   {...register("phone")}
-                  error={!!errors.phone}
+               //   error={!!errors.phone}
                   placeholder="Téléphone"
                   variant="outlined"
                   fullWidth
@@ -478,94 +534,103 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
             <Grid container spacing={2}>
               <Grid xs={12} item sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant='h4'>Menu</Typography>
-                <Button variant="outlined" onClick={() => addMenuFields({ image: "", name: "", price: 0, description: "" })}>Ajouter</Button>
+                <Button
+  variant="outlined"
+  onClick={() =>
+    addMenuFields({
+      image: [] as File[],
+      name: "" ,
+      price: 0,
+      description: "" 
+    } as CreateCustomerMenu)
+  }
+>
+                  Ajouter</Button>
               </Grid>
-              {
-                menuFields.map((field, index) => {
-                  const photo = watch('photo');
-                  const photoPreview = photo?.length > 0 && URL.createObjectURL(photo[0]);
-                
-                 
-                  return  <Grid item container xs={12} key={field.id}>
-                    <Grid item xs={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <label htmlFor="photo">
-                        <div
-                          style={
-                            photoPreview
-                              ? {
-                                height: '120px',
-                                width: '120px',
-                                backgroundImage: `url(${photoPreview})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                                backgroundRepeat: 'no-repeat',
-                                borderRadius: '12px',
-                                margin: "auto"
-                              }
-                              : {
-                                height: '120px',
-                                width: '120px',
-                                backgroundColor: 'gray',
-                                borderRadius: '12px',
-                                textAlign: 'center',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                color: 'white',
-                                margin: "auto"
-                              }
-                          }
-                        >
-                          {!photoPreview &&
-                            <Typography>Image</Typography>
-                          }
-                        </div>
-                      </label>
-                      <input
-                        {...register(`menu.${index}.image`)}
-                        id="photo"
-                        type="file"
-                        accept="images/*"
-                        hidden
-                      />
-                    </Grid>
-                    <Grid item container spacing={2} xs={7}>
-                      <Grid item xs={12} md={8}>
-                        <TextField
-                          {...register(`menu.${index}.name`)}
-                          required
-                          placeholder="Nom"
-                          variant="outlined"
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={4}>
-                        <TextField
-                          {...register(`menu.${index}.price`)}
-                          required
-                          type="number"
-                          placeholder="Prix"
-                          variant="outlined"
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          {...register(`menu.${index}.description`)}
-                          required
-                          placeholder="Description"
-                          variant="outlined"
-                          fullWidth
-                        />
-                      </Grid>
-                    </Grid>
-                    <Grid xs={1} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <IconButton onClick={() => removeMenuFields(index)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Grid>
-                  </Grid>
-                })
+              {menuFields &&
+                menuFields.map((field, index) => (
+                //  console.log("index from parent"+index),
+                   <CustomerMenuComponent key={field.id} index={index} removeMenuFields={removeMenuFields} indexProps={index}/>
+                  //  <Grid item container xs={12} key={field.id}>
+                  //   <Grid item xs={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  //     <label htmlFor="photo">
+                  //       <div
+                  //         style={
+                  //           photoPreview
+                  //             ? {
+                  //               height: '120px',
+                  //               width: '120px',
+                  //               backgroundImage: `url(${imagePreview})`,
+                  //               backgroundSize: 'cover',
+                  //               backgroundPosition: 'center',
+                  //               backgroundRepeat: 'no-repeat',
+                  //               borderRadius: '12px',
+                  //               margin: "auto"
+                  //             }
+                  //             : {
+                  //               height: '120px',
+                  //               width: '120px',
+                  //               backgroundColor: 'gray',
+                  //               borderRadius: '12px',
+                  //               textAlign: 'center',
+                  //               display: 'flex',
+                  //               justifyContent: 'center',
+                  //               alignItems: 'center',
+                  //               color: 'white',
+                  //               margin: "auto"
+                  //             }
+                  //         }
+                  //       >
+                  //         {!photoPreview &&
+                  //           <Typography>Image</Typography>
+                  //         }
+                  //       </div>
+                  //     </label>
+                  //     <input
+                  //       {...register(`menu.${index}.image`)}
+                  //       id="photo"
+                  //       type="file"
+                  //       accept="images/*"
+                  //       hidden
+                  //     />
+                  //   </Grid>
+                  //   <Grid item container spacing={2} xs={7}>
+                  //     <Grid item xs={12} md={8}>
+                  //       <TextField
+                  //         {...register(`menu.${index}.name`)}
+                  //         required
+                  //         placeholder="Nom"
+                  //         variant="outlined"
+                  //         fullWidth
+                  //       />
+                  //     </Grid>
+                  //     <Grid item xs={12} md={4}>
+                  //       <TextField
+                  //         {...register(`menu.${index}.price`)}
+                  //         required
+                  //         type="number"
+                  //         placeholder="Prix"
+                  //         variant="outlined"
+                  //         fullWidth
+                  //       />
+                  //     </Grid>
+                  //     <Grid item xs={12}>
+                  //       <TextField
+                  //         {...register(`menu.${index}.description`)}
+                  //         required
+                  //         placeholder="Description"
+                  //         variant="outlined"
+                  //         fullWidth
+                  //       />
+                  //     </Grid>
+                  //   </Grid>
+                  //   <Grid xs={1} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  //     <IconButton onClick={() => removeMenuFields(index)}>
+                  //       <DeleteIcon />
+                  //     </IconButton>
+                  //   </Grid>
+                  // </Grid>
+                ))
               }
             </Grid>
           }
@@ -606,6 +671,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
             </Grid>
           )}
         </form>
+        </FormProvider>
       </DialogContent>
 
     </Dialog>

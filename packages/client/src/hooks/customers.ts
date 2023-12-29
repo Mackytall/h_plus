@@ -41,3 +41,14 @@ export const useCustomers = () =>
     url: `${customersUrl}/all`,
     path: 'data.customers',
     method: 'GET',  })
+
+export const saveImage = async (image: FormData) => {
+  const response = await fetch(`${customersUrl}/bucket/image`, {
+    method: 'POST',
+    body: image,
+  });
+
+  const result = await response.json();
+
+  return result;
+};

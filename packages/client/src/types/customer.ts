@@ -26,10 +26,10 @@ type OfficeHours = {
     name: string;
     description: string;
     price: number;
-    image: string;
+    image: string ;
     }
 
-    export type CreateCustomerMenu = Omit<CustomerMenu, '_id'>  & {
+    export type CreateCustomerMenu = Omit<CustomerMenu, '_id' >  & {
       image: File[];
       [key: string]: any;
     }
@@ -39,7 +39,7 @@ type OfficeHours = {
     _id: string;
     incrementalId: string;
     name: string;
-    photo?: string | [];
+    image?: string;
     description?: string;
     isPartner: boolean;
     isActive: boolean;
@@ -65,9 +65,30 @@ type OfficeHours = {
   ICustomer,
   '_id' | 'createdAt' | 'updatedAt' | 'incrementalId' | 'isActiveInHccp' | 'isPartner'
   > & {
-    photo: File[];
-    //menu?: CreateCustomerMenu[];
+    image: File[];
+    menu?: CreateCustomerMenu[];
     [key: string]: any;
   }
 
+  // export interface CreateCustomer {
+  //   name: string;
+  //   image?: string;
+  //   description?: string;
+  //   isActive: boolean;
+  //   isActiveInHccp: boolean;
+  //   customerType: CustomerTypes;
+  //   address: string;
+  //   zipCode: string;
+  //   city: string;
+  //   country: string;
+  //   phone?: string;
+  //   mail:string;
+  //   officeHours?: OfficeHours[];
+  //   detail?: CustomerDetail;
+  //   menu?: CreateCustomerMenu[];
+  //   menuPriceUnit: string;
+  //   createdBy: string;
+
+  // }
+  
   
