@@ -97,6 +97,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
     resolver: yupResolver(customerSchema),
   });
   const { handleSubmit, register, watch, reset, control } = methods;
+  const selectedCustomerType = watch("customerType")
 
   const { fields: officeHoursFields, append: addOfficeHours, remove: removeOfficeHoursFields } = useFieldArray({
     control,
@@ -345,7 +346,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                     {...register('customerType')}
                     required
                     // error={!!errors.customerType}
-                    // value={selectedStatus || []}
+                    value={selectedCustomerType || []}
                     label="Type"
                   >
                     {Object.values(CustomerTypes).map((type) => (

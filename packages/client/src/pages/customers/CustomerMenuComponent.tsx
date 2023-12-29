@@ -32,7 +32,7 @@ const CustomerMenuComponent = ({index, removeMenuFields, indexProps}:ICustomerMe
     const { register, watch } = useFormContext();
     const imageName = `menu.${index}.image`;
   const image = watch(imageName);
-    const imagePreview = image?.length > 0 && URL.createObjectURL(image[0]);
+  const imagePreview = image?.length > 0 ? URL.createObjectURL(image[0]) : '';
 
 
     useEffect(

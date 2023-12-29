@@ -28,12 +28,16 @@ function stringToColor(string: string) {
   
     return color;
   }
-function stringAvatar(name: string) {
+  function stringAvatar(name: string) {
+    const words = name.split(' ');
+  
     return {
       style: {
         backgroundColor: stringToColor(name),
       },
-      children: `${name.split(' ')[0][0].toUpperCase()}${name.split(' ')[1][0].toUpperCase()}`,
+      children: words.length > 1
+        ? `${words[0][0].toUpperCase()}${words[1][0].toUpperCase()}`
+        : `${name[0].toUpperCase()}`,
     };
   }
 
@@ -58,6 +62,7 @@ const CustomerCell = ({ customer }: ICustomerCellProps) => {
             <TableCell sx={{ display: "flex", alignItems: "center", gap:"15px"}}>
                 <Avatar
                     sx={{borderRadius:2}}
+                    src= {customer.image}
                     alt="Remy Sharp"
                     {...stringAvatar( `${customer.name}`)} 
 
