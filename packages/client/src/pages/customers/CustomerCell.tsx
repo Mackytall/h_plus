@@ -72,7 +72,7 @@ const CustomerCell = ({ customer }: ICustomerCellProps) => {
             </TableCell>
             <TableCell align="right">{customer.incrementalId}</TableCell>
             <TableCell align="right">{labelizeCustomerType(customer.customerType)}</TableCell>
-            <TableCell align="right">{customer.city}</TableCell>
+            <TableCell align="right" >{customer.city}</TableCell>
             <TableCell align="right">{customer.isActive ? <DoneIcon/> : <CloseIcon/>}</TableCell>
             <TableCell align="right">{customer.isActiveInApp ? <DoneIcon/> : <CloseIcon/>}</TableCell>
             <TableCell align="right">{convertDateStringToFormattedDate(customer.createdAt)}</TableCell>

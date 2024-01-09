@@ -5,6 +5,7 @@ import Splash from './components/Splash';
 import { routes } from './routes';
 import AuthProvider from './contexts/AuthContext';
 import SideBar from './components/SideBar';
+import Sb from './components/Sb';
 
 export const appTheme: Theme = createTheme({
   palette: {
@@ -30,14 +31,16 @@ function App() {
         <Suspense fallback={<Splash />}>
           <AuthProvider>
             <BrowserRouter>
-            <div style={{ display: 'flex'}}>
-               <SideBar/>
+            {/* <div style={{ display: 'flex',}}> */}
+               {/* <SideBar/> */}
+               <Sb>
               <Routes>
                 {routes.map((route) => (
                   <Route key={route.id} path={route.path} element={route.component} />
                 ))}
               </Routes>
-            </div>
+              </Sb>
+            {/* </div> */}
            
             </BrowserRouter>
           </AuthProvider>

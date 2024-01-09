@@ -44,9 +44,10 @@ const Customers = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <Grid container p={4} sx={{ height: "80%", }} >
+    <Grid container sx={{ height: "80%", }} >
       <Grid item container spacing={4}>
       <Grid item xs={8}>
+        
         <SearchBar setSearchQuery={setSearchQuery} />
       </Grid>
       <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-start", gap: "30px" }}>
@@ -59,7 +60,6 @@ const Customers = () => {
       </Grid>
       </Grid>
       <AddCustomerDialog handleCloseDialog={handleCloseDialog} openDialog={openDialog} />
-
       <TableContainer component={Paper} sx={{marginTop:5}}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

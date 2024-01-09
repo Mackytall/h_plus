@@ -9,10 +9,9 @@ const SearchBar = ({setSearchQuery}: SearchBarProps) => {
     return (
         <form>
         <TextField
-        
           id="search"
           type="search"
-          label="Rechercher un nom"
+          placeholder="Rechercher un nom"
           fullWidth
           onChange={(e :any) => {
             setSearchQuery(e.target.value);
