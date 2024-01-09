@@ -20,10 +20,11 @@ import uniqid from 'uniqid';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { customerSchema } from '../../utils/schemas';
-import { saveImage, useCreateCustomer } from '../../hooks/customers';
+import { saveImage, useCreateCustomer, useCustomer } from '../../hooks/customers';
 import { displayToast } from '../../helper/toastHelper';
 import CustomerMenuComponent from './CustomerMenuComponent';
 import Compressor from 'compressorjs';
+import { useParams } from 'react-router-dom';
 
 
 
@@ -33,6 +34,8 @@ const steps = ['Info', 'Détail', 'Menu'];
 interface IAddCustomerDialogProps {
   handleCloseDialog(): void
   openDialog: boolean;
+  isNew: boolean;
+  customerId?: string;
 }
 
 interface IOfficeHoursFields {
@@ -48,10 +51,40 @@ interface IMenuFields {
   description: string;
 }
 
-const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialogProps) => {
+const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId}: IAddCustomerDialogProps) => {
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set<number>());
   const [isOfficeHoursAccordionOpen, setIsOfficeHoursAccordionOpen] = useState<boolean>(true)
+  const [customer, setCustomer] = useState<ICustomer>()
+  const {data : fetchedCustomer} = useCustomer(customerId);
+  const [fetchedMenu, setFetchedMenu] = useState<CustomerMenu>()
+  
+
+  useEffect (() => {
+    if(customerId && customerId !== undefined && fetchedCustomer ) {
+      setCustomer(fetchedCustomer)
+      reset({
+        name: fetchedCustomer.name ?? "",
+        mail: fetchedCustomer.mail ?? "",
+        phone: fetchedCustomer.phone ?? "",
+        customerType: fetchedCustomer.customerType ?? CustomerTypes.butcher,
+        address: fetchedCustomer.address ?? "",
+        zipCode: fetchedCustomer.zipCode ?? "",
+        city: fetchedCustomer.city ?? "",
+        country: fetchedCustomer.country ?? "France",
+        image: [],
+        description: fetchedCustomer.description ?? "",
+        officeHours: fetchedCustomer.officeHours ?? [
+          { day: OpeningDays.Lundi, startHour: "", endHour: "" },
+        ],
+        menu: (fetchedCustomer.menu ?? [
+          { image: undefined, name: "", price: 0, description: "" }
+        ]) as CreateCustomerMenu[],
+        menuPriceUnit: fetchedCustomer.menuPriceUnit ?? "€",
+        createdBy: fetchedCustomer.createdBy ?? '656f23faeda3351e49d7c53c',
+      })
+    }
+  }, [customerId,fetchedCustomer ])
 
   const { mutateAsync: createCustomer } = useCreateCustomer({
     onSuccess: (data) => {
@@ -120,8 +153,6 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
   );
 
  
-
-
   const isStepOptional = (step: number) => {
     return step === 1;
   };
@@ -196,7 +227,6 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
   };
   
 
-
   const onSubmit: SubmitHandler<CreateCustomer>  = async (data: any) => {
     handleNext();
     if (activeStep === 2) {
@@ -236,7 +266,9 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
 
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullScreen={true} sx={{ width: "80%", height: "80%", margin: "auto", backgroundCOlor: "blue" }} >
-      <DialogTitle>Création d'un établissement</DialogTitle>
+      <DialogTitle> { isNew ? "Création d'un établissement" : "Mise à jour d'un établissement"
+        
+        }</DialogTitle>
       <DialogContent >
         <Stepper activeStep={activeStep}>
           {steps.map((label, index) => {
@@ -270,11 +302,11 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                 <label htmlFor="image">
                   <div
                     style={
-                      imagePreview
+                      imagePreview || customer?.image
                         ? {
                           height: '140px',
                           width: '140px',
-                          backgroundImage: `url(${imagePreview})`,
+                          backgroundImage: `url(${imagePreview || customer?.image})`,
                           backgroundSize: 'cover',
                           backgroundPosition: 'center',
                           backgroundRepeat: 'no-repeat',
@@ -295,7 +327,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
                         }
                     }
                   >
-                    {!imagePreview &&
+                    {!imagePreview && !customer?.image &&
                       <Typography>Logo</Typography>
                     }
                   </div>
@@ -551,7 +583,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog }: IAddCustomerDialog
               {menuFields &&
                 menuFields.map((field, index) => (
                 //  console.log("index from parent"+index),
-                   <CustomerMenuComponent key={field.id} index={index} removeMenuFields={removeMenuFields} indexProps={index}/>
+                   <CustomerMenuComponent key={field.id} index={index} removeMenuFields={removeMenuFields} indexProps={index} fetchedImage={field.image}/>
                   //  <Grid item container xs={12} key={field.id}>
                   //   <Grid item xs={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                   //     <label htmlFor="photo">

@@ -52,3 +52,12 @@ export const saveImage = async (image: FormData) => {
 
   return result;
 };
+
+export const useCustomer = (id: string | undefined ) =>
+  useSecureQuery<ICustomer>([reactQueryKeys.customers, id], {
+    url: `${customersUrl}/${id}`,
+    method: 'GET',
+    path: 'data.customer',
+    secure: true,
+    enabled: !!id && id !== 'null' && id !== 'undefined',
+  })

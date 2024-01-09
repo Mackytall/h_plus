@@ -23,16 +23,17 @@ import { useEffect } from 'react';
  });
 
 export interface ICustomerMenuProps {
+  fetchedImage?: CustomerMenu['image'];
     index: number
     indexProps: number
     removeMenuFields: (index?: number | number[]) => void
 }
 
-const CustomerMenuComponent = ({index, removeMenuFields, indexProps}:ICustomerMenuProps) => {
+const CustomerMenuComponent = ({index, removeMenuFields, fetchedImage, indexProps}:ICustomerMenuProps) => {
     const { register, watch } = useFormContext();
     const imageName = `menu.${index}.image`;
   const image = watch(imageName);
-  const imagePreview = image?.length > 0 ? URL.createObjectURL(image[0]) : '';
+  const imagePreview = image?.length > 0 && typeof image !== 'string' ? URL.createObjectURL(image[0]) : '';
 
 
     useEffect(
@@ -48,11 +49,11 @@ const CustomerMenuComponent = ({index, removeMenuFields, indexProps}:ICustomerMe
           <label htmlFor="photo">
             <div
               style={
-                imagePreview
+                imagePreview || fetchedImage
                   ? {
                     height: '120px',
                     width: '120px',
-                    backgroundImage: `url(${imagePreview})`,
+                    backgroundImage: `url(${imagePreview || fetchedImage})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
@@ -71,7 +72,7 @@ const CustomerMenuComponent = ({index, removeMenuFields, indexProps}:ICustomerMe
                   }
               }
             >
-              {!imagePreview &&
+              {!imagePreview && !fetchedImage &&
                 <Typography>Image</Typography>
               }
                

@@ -3,6 +3,7 @@ import uniqid from 'uniqid';
 import Customers from '../pages/customers/Customers';
 import Dashboard from '../pages/Dashboard';
 import Auth from '../pages/auth/Auth';
+import EditCustomer from '../pages/customers/EditCustomer';
 
 
 //import AdminRoute from './AdminRoute';
@@ -42,6 +43,15 @@ export const routes: Route[] = [
     component: (
       <Wrapper>
         <Customers/>
+      </Wrapper>
+    ),
+  },
+  {
+    id: uniqid(),
+    path: '/customers/edit',
+    component: (
+      <Wrapper>
+        <EditCustomer/>
       </Wrapper>
     ),
   },

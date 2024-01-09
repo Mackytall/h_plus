@@ -6,9 +6,11 @@ import { useState } from "react";
 import { ICustomer } from "../../types/customer";
 import { convertDateStringToFormattedDate, labelizeCustomerType } from "../../utils/funcs";
 import DoneIcon from '@mui/icons-material/Done';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface ICustomerCellProps {
-    customer: ICustomer
+    customer: ICustomer;
+    handleEdit: () => void
 
 }
 function stringToColor(string: string) {
@@ -41,7 +43,7 @@ function stringToColor(string: string) {
     };
   }
 
-const CustomerCell = ({ customer }: ICustomerCellProps) => {
+const CustomerCell = ({ customer, handleEdit }: ICustomerCellProps) => {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -76,6 +78,11 @@ const CustomerCell = ({ customer }: ICustomerCellProps) => {
             <TableCell align="right">{customer.isActive ? <DoneIcon/> : <CloseIcon/>}</TableCell>
             <TableCell align="right">{customer.isActiveInApp ? <DoneIcon/> : <CloseIcon/>}</TableCell>
             <TableCell align="right">{convertDateStringToFormattedDate(customer.createdAt)}</TableCell>
+            <TableCell align="right">
+              <IconButton onClick={handleEdit}>
+                <EditIcon/>
+              </IconButton>
+            </TableCell>
         </TableRow>
     )
 }

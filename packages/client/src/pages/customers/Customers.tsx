@@ -17,6 +17,8 @@ import { ICustomer } from "../../types/customer";
 
 const Customers = () => {
   const [openDialog, setOpenDialog] = useState(false);
+  const [isCustomerNew, setIsCustomerNew] = useState(true);
+  const [customerId, setCustomerId] = useState<string>();
 
   const filterData = (query: string, data: ICustomer[]) => {
     if (!query) {
@@ -31,15 +33,21 @@ const Customers = () => {
   };
 
   const {data: customers} = useCustomers();
-  console.log(customers)
-  const handleClickOpenDialog = () => {
+  const handleClickAddCustomer = () => {
+    setCustomerId(undefined);
+    setIsCustomerNew(true);
     setOpenDialog(true);
-    console.log("clicked")
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
+  const handleEdit = (id:string) => {
+    setCustomerId(id);
+    setIsCustomerNew(false);
+    setOpenDialog(true);
+  }
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -51,7 +59,7 @@ const Customers = () => {
         <SearchBar setSearchQuery={setSearchQuery} />
       </Grid>
       <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-start", gap: "30px" }}>
-        <Button variant="text" endIcon={<AddIcon />} onClick={() => handleClickOpenDialog()}>
+        <Button variant="text" endIcon={<AddIcon />} onClick={() => handleClickAddCustomer()}>
           <Typography fontWeight="500" style={{ color: 'black' }}>
             Ajouter
           </Typography>
@@ -59,7 +67,7 @@ const Customers = () => {
         {/* <ExportExcel excelData={users} fileName="data" /> */}
       </Grid>
       </Grid>
-      <AddCustomerDialog handleCloseDialog={handleCloseDialog} openDialog={openDialog} />
+      <AddCustomerDialog handleCloseDialog={handleCloseDialog} openDialog={openDialog} isNew={isCustomerNew} customerId={customerId}/>
       <TableContainer component={Paper} sx={{marginTop:5}}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -75,7 +83,7 @@ const Customers = () => {
           </TableHead>
           <TableBody>
             {customers && filterData(searchQuery, customers).map((customer : ICustomer) => (
-              <CustomerCell key={customer._id} customer={customer} />
+              <CustomerCell key={customer._id} customer={customer} handleEdit={() => handleEdit(customer._id)} />
             ))}
           </TableBody>
         </Table>
