@@ -1,4 +1,4 @@
-import { TableRow, Grid, TableContainer, Table, TableHead, TableCell, TableBody, Paper, Typography, Avatar, Button, styled, Checkbox } from "@mui/material";
+import { TableRow, Grid, TableContainer, Table, TableHead, TableCell, TableBody, Paper, Typography, Avatar, Button, styled, Checkbox, TableFooter, TablePagination } from "@mui/material";
 import { useUsers } from "../../hooks/users";
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
@@ -27,7 +27,21 @@ const Customers = () => {
   const [isCustomerNew, setIsCustomerNew] = useState(true);
   const [customerId, setCustomerId] = useState<string>();
   const [selected, setSelected] = useState<ICustomer[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  //const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - (events || []).length) : 0;
+
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const filterData = (query: string, data: ICustomer[]) => {
     if (!query) {
@@ -129,7 +143,7 @@ const Customers = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {filterData(searchQuery, customers).map((customer : ICustomer) => {
+          {filterData(searchQuery, customers).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((customer : ICustomer) => {
              const isItemSelected = selected.indexOf(customer) !== -1;
             // const labelId = `enhanced-table-checkbox-${customer._id}`;
             return (
@@ -137,6 +151,23 @@ const Customers = () => {
           )}
           )}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+             <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          labelRowsPerPage="Lignes par page"
+          labelDisplayedRows={({ from, to, count }) =>
+                `${from}-${to} sur ${count !== -1 ? count : `plus que ${to}`}`
+              }
+          count={customers.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          //sx={{ width: '100%' }}
+        />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
     }
