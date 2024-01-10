@@ -1,4 +1,4 @@
-import { IconButton, TableCell, TableRow, Avatar,} from "@mui/material";
+import { IconButton, TableCell, TableRow, Avatar, styled, Checkbox} from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from "react-router-dom";
@@ -8,9 +8,14 @@ import { convertDateStringToFormattedDate, labelizeCustomerType } from "../../ut
 import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
 
+const StyledTableCell = styled(TableCell)(({theme}) => ({
+  textAlign: "center"
+})) 
 interface ICustomerCellProps {
     customer: ICustomer;
-    handleEdit: () => void
+    handleEdit: () => void;
+    handleRowClick: (customer: ICustomer) => void;
+    isItemSelected: boolean;
 
 }
 function stringToColor(string: string) {
@@ -43,7 +48,7 @@ function stringToColor(string: string) {
     };
   }
 
-const CustomerCell = ({ customer, handleEdit }: ICustomerCellProps) => {
+const CustomerCell = ({ customer, handleEdit, handleRowClick,isItemSelected }: ICustomerCellProps) => {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,8 +65,15 @@ const CustomerCell = ({ customer, handleEdit }: ICustomerCellProps) => {
     return (
         <TableRow
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            onClick={() => handleRowClick(customer)}
         >
-            <TableCell sx={{ display: "flex", alignItems: "center", gap:"15px"}}>
+                      <StyledTableCell >
+                        <Checkbox
+                        checked={isItemSelected}
+                        />
+                      </StyledTableCell>
+
+            <StyledTableCell sx={{ display: "flex", alignItems: "center", gap:"15px"}}>
                 <Avatar
                     sx={{borderRadius:2}}
                     src= {customer.image}
@@ -71,18 +83,18 @@ const CustomerCell = ({ customer, handleEdit }: ICustomerCellProps) => {
                 // sx={{ width: 100, height: 100 }}
                 />
                 {customer.name}
-            </TableCell>
-            <TableCell align="right">{customer.incrementalId}</TableCell>
-            <TableCell align="right">{labelizeCustomerType(customer.customerType)}</TableCell>
-            <TableCell align="right" >{customer.city}</TableCell>
-            <TableCell align="right">{customer.isActive ? <DoneIcon/> : <CloseIcon/>}</TableCell>
-            <TableCell align="right">{customer.isActiveInApp ? <DoneIcon/> : <CloseIcon/>}</TableCell>
-            <TableCell align="right">{convertDateStringToFormattedDate(customer.createdAt)}</TableCell>
-            <TableCell align="right">
+            </StyledTableCell>
+            <StyledTableCell >{customer.incrementalId}</StyledTableCell>
+            <StyledTableCell >{labelizeCustomerType(customer.customerType)}</StyledTableCell>
+            <StyledTableCell  >{customer.city}</StyledTableCell>
+            <StyledTableCell >{customer.isActive ? <DoneIcon/> : <CloseIcon/>}</StyledTableCell>
+            <StyledTableCell >{customer.isActiveInApp ? <DoneIcon/> : <CloseIcon/>}</StyledTableCell>
+            <StyledTableCell >{convertDateStringToFormattedDate(customer.createdAt)}</StyledTableCell>
+            <StyledTableCell >
               <IconButton onClick={handleEdit}>
                 <EditIcon/>
               </IconButton>
-            </TableCell>
+            </StyledTableCell>
         </TableRow>
     )
 }
