@@ -35,21 +35,20 @@ const CustomerMenuComponent = ({index, removeMenuFields, fetchedImage, indexProp
   const image = watch(imageName);
   const imagePreview = image?.length > 0 && typeof image !== 'string' ? URL.createObjectURL(image[0]) : '';
 
-
     useEffect(
       () => () => {
         if (imagePreview) URL.revokeObjectURL(imagePreview);
       },
       [imagePreview, ]
     );
-  
+  console.log(fetchedImage?.length)
     return (
         <Grid item container xs={12}  >
         <Grid item xs={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
           <label htmlFor="photo">
             <div
               style={
-                imagePreview || fetchedImage
+                imagePreview || (fetchedImage && fetchedImage.length > 0)
                   ? {
                     height: '120px',
                     width: '120px',
@@ -72,12 +71,12 @@ const CustomerMenuComponent = ({index, removeMenuFields, fetchedImage, indexProp
                   }
               }
             >
-              {!imagePreview && !fetchedImage &&
+              {!imagePreview && !(fetchedImage && fetchedImage.length > 0) &&
                 <Typography>Image</Typography>
               }
                
             </div>
-            <Button sx={{display:"flex", justifyContent:"center", alignItems:"flex-bottom", }} component="label" variant="contained" hidden startIcon={<CloudUploadIcon />}>
+            <Button sx={{display:"flex", justifyContent:"center", alignItems:"flex-bottom", }} component="label" variant="contained" startIcon={<CloudUploadIcon />}>
       <VisuallyHiddenInput 
       required
       type="file"  
@@ -85,15 +84,6 @@ const CustomerMenuComponent = ({index, removeMenuFields, fetchedImage, indexProp
       {...register(`menu.${index}.image`)}/>
     </Button>
           </label>
-         
-           {/* <input
-          onClick={()=> console.log(index)}
-            {...register(`menu.${index}.image`)}
-            id="photo"
-           type="file"
-            accept="images/*"
-            
-          />  */}
         </Grid> 
         <Grid item container spacing={2} xs={7}>
           <Grid item xs={12} md={8}>

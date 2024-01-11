@@ -40,7 +40,8 @@ export const useCustomers = () =>
   useSecureQuery<ICustomer[]>(reactQueryKeys.customers, {
     url: `${customersUrl}/all`,
     path: 'data.customers',
-    method: 'GET',  })
+    method: 'GET',
+  })
 
 export const saveImage = async (image: FormData) => {
   const response = await fetch(`${customersUrl}/bucket/image`, {
@@ -61,3 +62,36 @@ export const useCustomer = (id: string | undefined ) =>
     secure: true,
     enabled: !!id && id !== 'null' && id !== 'undefined',
   })
+
+  export const useUpdateCustomer = ({
+    onSuccess,
+    onError,
+    id,
+  }: {
+    onSuccess: (data: SuccessResponse | null) => void;
+    onError: (error: any) => void;
+    id: ICustomer['_id'];
+  }) => {
+    const queryClient = useQueryClient();
+    const updateCustomer = useMutation(
+      ({ customer, id }: { customer: Partial<ICustomer>; id: ICustomer['_id'] }) =>
+        fetchSecure<SuccessResponse>(`${customersUrl}/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify(customer),
+          throwOnError: true,
+          secure: true,
+          specifyTypeContent: true,
+        }),
+      {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries(reactQueryKeys.customers);
+          queryClient.invalidateQueries([reactQueryKeys.customers, id]);
+          onSuccess(res.data);
+        },
+        onError: (error) => {
+          onError(error);
+        },
+      }
+    );
+    return updateCustomer;
+  };
