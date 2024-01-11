@@ -95,3 +95,36 @@ export const useCustomer = (id: string | undefined ) =>
     );
     return updateCustomer;
   };
+
+  export const useDeleteCustomer = ({
+    onSuccess,
+    onError,
+    id,
+  }: {
+    onSuccess: (data: SuccessResponse | null) => void;
+    onError: (error: any) => void;
+    id: ICustomer['_id'];
+  }) => {
+    const queryClient = useQueryClient();
+    const deleteCustomer = useMutation(
+      ({id }: { id: ICustomer['_id'] }) =>
+        fetchSecure<SuccessResponse>(`${customersUrl}/${id}`, {
+          method: 'DELETE',
+          throwOnError: true,
+          secure: true,
+          specifyTypeContent: true,
+        }),
+      {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries(reactQueryKeys.customers);
+          queryClient.invalidateQueries([reactQueryKeys.customers, id]);
+          onSuccess(res.data);
+        },
+        onError: (error) => {
+          onError(error);
+        },
+      }
+    );
+    return deleteCustomer;
+  };
+  

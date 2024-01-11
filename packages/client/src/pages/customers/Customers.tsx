@@ -14,6 +14,7 @@ import { useCustomers } from "../../hooks/customers";
 import CustomerCell from "./CustomerCell";
 import { ICustomer } from "../../types/customer";
 import ExcelExportExportButton from "../../components/ExcelExportButton";
+import DeleteCustomer from "./DeleteCustomerComponent";
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -133,13 +134,14 @@ const Customers = () => {
           
         />
                     </StyledTableCell>
-            <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell sx={{textAlign:"left"}}>Name</StyledTableCell>
             <StyledTableCell >ID</StyledTableCell>
             <StyledTableCell >Type</StyledTableCell>
             <StyledTableCell >Ville</StyledTableCell>
             <StyledTableCell >Statut global</StyledTableCell>
             <StyledTableCell >Statut application</StyledTableCell>
             <StyledTableCell >Date création</StyledTableCell>
+            <StyledTableCell >Options</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>

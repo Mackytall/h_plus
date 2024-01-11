@@ -15,7 +15,7 @@ const ExcelExportExportButton = ({ excelData, fileName }: IExportExcelProps) => 
     const fileExtension = ".xlsx"
 
     const exportToExcel = () => {
-        if (excelData && excelData?.length > 0 ) {
+        if (excelData && excelData.length > 0 ) {
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = { Sheets: { "data": ws }, SheetNames: ["data"] };
         const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
@@ -26,7 +26,7 @@ const ExcelExportExportButton = ({ excelData, fileName }: IExportExcelProps) => 
 
     return (
         <>
-            <Button variant="text" endIcon={<FileUploadIcon />} onClick={() => {exportToExcel()}}>
+            <Button disabled={excelData?.length === 0} variant="text" endIcon={<FileUploadIcon />} onClick={() => {exportToExcel()}}>
                 <Typography fontWeight="500" style={{ color: 'black' }}>
                     Exporter
                 </Typography>

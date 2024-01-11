@@ -1,5 +1,5 @@
 import { IconButton, TableCell, TableRow, Avatar, styled, Checkbox} from "@mui/material";
-import CheckIcon from '@mui/icons-material/Check';
+import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import { ICustomer } from "../../types/customer";
 import { convertDateStringToFormattedDate, labelizeCustomerType } from "../../utils/funcs";
 import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteCustomerComponent from "./DeleteCustomerComponent";
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
   textAlign: "center"
@@ -94,6 +95,7 @@ const CustomerCell = ({ customer, handleEdit, handleRowClick,isItemSelected }: I
               <IconButton onClick={handleEdit}>
                 <EditIcon/>
               </IconButton>
+             <DeleteCustomerComponent customerName={customer.name} customerId={customer._id}/>
             </StyledTableCell>
         </TableRow>
     )
