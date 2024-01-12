@@ -11,7 +11,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useFormContext, RegisterOptions } from 'react-hook-form';
 
 export interface IPasswordInputProps {
-  label: string;
+  placeholder?:string;
+  label?: string;
   color: 'error' | 'info' | 'primary' | 'secondary' | 'success' | 'warning' | undefined;
   id: string;
   error: boolean;
@@ -25,6 +26,7 @@ export interface IPasswordInputProps {
 }
 
 const PasswordInput = ({
+  placeholder,
   label,
   color,
   id,
@@ -56,18 +58,19 @@ const PasswordInput = ({
       color={color}
       required={required}
     >
-      <InputLabel htmlFor={id} color={error ? 'error' : color}>
+      {/* <InputLabel htmlFor={id} color={error ? 'error' : color}>
         {label}
-      </InputLabel>
+      </InputLabel> */}
       <OutlinedInput
         autoComplete="off"
         id={id}
-        label={label}
+        placeholder={placeholder}
+          label={label}
         type={showPassword ? 'text' : 'password'}
         {...register(name, options)}
         error={error}
-        defaultValue={defaultValue}
-        aria-describedby={`${id}-helper-text`}
+       defaultValue={defaultValue}
+       aria-describedby={`${id}-helper-text`}
         endAdornment={
           <InputAdornment position="end">
             <IconButton

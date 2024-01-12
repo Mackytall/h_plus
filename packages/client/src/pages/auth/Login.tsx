@@ -34,24 +34,14 @@ const Login = (props: ILoginProps) => {
   } = useForm<LoginForm>({ mode: 'onBlur', defaultValues: { username: '', password: '' } });
 
   const onSubmit = async (data: LoginForm) => {
-    navigate('/customers');
-    // try {
-    //   const user = await login(data);
-    //   switch (user.role) {
-    //     case UserRole.admin:
-    //       navigate('/admin');
-    //       break;
-    //     case UserRole.user:
-    //       navigate('/dashboard');
-    //       break;
-    //     default:
-    //       throw new Error(
-    //         'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, réessayer de vous connecter. Si le problème persiste veuillez prendre contact avec nous.'
-    //       );
-    //   }
-    // } catch (error: any) {
-    //   console.error(error);
-    // }
+    try {
+      const user = await login(data);
+      console.log(user)
+      navigate("/customers")
+    } catch (error: any) {
+      console.error(error);
+      console.log("eed")
+    }
   };
 
   return (
@@ -74,14 +64,14 @@ const Login = (props: ILoginProps) => {
             helperText={errors.username && errors.username.message}
             fullWidth
             required
-            label="Nom d'utilisateur"
+            placeholder="Nom d'utilisateur"
           />
           <PasswordInput
             color="primary"
             defaultValue=""
             fullWidth
             id="password"
-            label="Mot de passe"
+            placeholder="Mot de passe"
             variant="outlined"
             name="password"
             error={!!errors.password}
@@ -95,7 +85,7 @@ const Login = (props: ILoginProps) => {
               },
             }}
           />
-          <Button variant="contained" type="submit" fullWidth>
+          <Button variant="contained" style={{backgroundColor:'#009A95'}} type="submit" fullWidth>
             Se connecter
           </Button>
           <Button variant="text">Vous avez oublié votre mot de passe ?</Button>

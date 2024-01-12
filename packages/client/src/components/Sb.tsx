@@ -13,6 +13,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { useLocation } from 'react-router-dom';
 
 
 interface NavigationItem {
@@ -45,6 +46,10 @@ interface NavigationItem {
   export default function Sb({ children}: ISbProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [currentNavigation, setCurrentNavigation] = useState<NavigationItem['name']>();
+
+      const location = useLocation();
+  const authPaths = ["/login"]
+  const isAuthPage = authPaths.includes(location.pathname);
   
     const navigation: NavigationItem[] = [
       { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
@@ -77,8 +82,8 @@ interface NavigationItem {
         ```
       */}
       <div>
-        <Transition.Root show={sidebarOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
+        <Transition.Root  show={sidebarOpen} as={Fragment}>
+          <Dialog  as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"

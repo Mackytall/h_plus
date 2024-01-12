@@ -29,7 +29,7 @@ export const routes: Route[] = [
   },
   {
     id: uniqid(),
-    path: '/',
+    path: '/login',
     component: (
       <Wrapper>
         <Auth/>

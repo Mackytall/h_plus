@@ -54,7 +54,7 @@ export type UserDeleted = {
 
 export type UserAuth = {
   token: string;
-  id: IUser['_id'];
+  user: IUser;
 };
 
 export type FetchUser = {

@@ -1,11 +1,12 @@
 import { Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { createTheme, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material/styles';
 import Splash from './components/Splash';
 import { routes } from './routes';
 import AuthProvider from './contexts/AuthContext';
 import SideBar from './components/SideBar';
 import Sb from './components/Sb';
+
 
 export const appTheme: Theme = createTheme({
   palette: {
@@ -25,14 +26,14 @@ export const appTheme: Theme = createTheme({
 });
 
 function App() {
+
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={appTheme}>
         <Suspense fallback={<Splash />}>
           <AuthProvider>
             <BrowserRouter>
-            {/* <div style={{ display: 'flex',}}> */}
-               {/* <SideBar/> */}
                <Sb>
               <Routes>
                 {routes.map((route) => (
@@ -40,8 +41,6 @@ function App() {
                 ))}
               </Routes>
               </Sb>
-            {/* </div> */}
-           
             </BrowserRouter>
           </AuthProvider>
         </Suspense>

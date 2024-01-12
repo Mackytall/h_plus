@@ -67,10 +67,10 @@ const AuthProvider = ({ children }: IAuthProviderProps) => {
               onSuccess: async (res) => {
                 if (res.data) {
                   localStorage.setItem(storage.USER_TOKEN, res.data.token);
-                  localStorage.setItem(storage.USER_ID, res.data.id);
+                  localStorage.setItem(storage.USER_ID, res.data.user._id);
                   setLoggedOut(false);
-                  console.log(res)
-                  const userReq = await fetchUser(res.data.id);
+                  console.log(res.data)
+                  const userReq = await fetchUser(res.data.user._id);
                  // await refetch();
                   if (userReq.ok && userReq.data) {
                     resolve(userReq.data.user);
@@ -101,9 +101,9 @@ const AuthProvider = ({ children }: IAuthProviderProps) => {
               onSuccess: async (res) => {
                 if (res.data) {
                   localStorage.setItem(storage.USER_TOKEN, res.data.token);
-                  localStorage.setItem(storage.USER_ID, res.data.id);
+                  localStorage.setItem(storage.USER_ID, res.data.user._id);
                   setLoggedOut(false);
-                  const userReq = await fetchUser(res.data.id);
+                  const userReq = await fetchUser(res.data.user._id);
                   await refetch();
                   if (userReq.ok && userReq.data) {
                     resolve(userReq.data.user);
