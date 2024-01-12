@@ -143,7 +143,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
       officeHours: [
         { day: OpeningDays.Lundi, startHour: "", endHour: "" },
       ],
-      menu: [{ image: undefined, name: "", price: 0, description: "" }],
+      menu: [({ image: [] as File[], name: "", price: 0, description: "" }) as CreateCustomerMenu],
       menuPriceUnit: "€",
       createdBy: '656f23faeda3351e49d7c53c',
     },
