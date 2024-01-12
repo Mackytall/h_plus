@@ -59,25 +59,6 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
   const { data: fetchedCustomer } = useCustomer(customerId);
   const [fetchedMenu, setFetchedMenu] = useState<CustomerMenu>()
 
-  const defaultValues  = {
-    name: "",
-    mail: "",
-    phone: "",
-    customerType: CustomerTypes.butcher,
-    address: "",
-    zipCode: "",
-    city: "",
-    country: "France",
-    image: [],
-    description: "",
-    officeHours: [
-      { day: OpeningDays.Lundi, startHour: "", endHour: "" },
-    ],
-    menu: [{ image: undefined, name: "", price: 0, description: "" }],
-    menuPriceUnit: "€",
-    createdBy: '656f23faeda3351e49d7c53c',
-  }
-
   useEffect(() => {
     setActiveStep(0)
     if (customerId && customerId !== undefined && fetchedCustomer) {
@@ -103,7 +84,22 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
         createdBy: fetchedCustomer.createdBy ?? '656f23faeda3351e49d7c53c',
       })
     } else {
-      reset(defaultValues)
+      reset({ name: "",
+      mail: "",
+      phone: "",
+      customerType: CustomerTypes.butcher,
+      address: "",
+      zipCode: "",
+      city: "",
+      country: "France",
+      image: [],
+      description: "",
+      officeHours: [
+        { day: OpeningDays.Lundi, startHour: "", endHour: "" },
+      ],
+      menu: [{ image: undefined, name: "", price: 0, description: "" }],
+      menuPriceUnit: "€",
+      createdBy: '656f23faeda3351e49d7c53c',})
     }
   }, [customerId, fetchedCustomer,])
 
@@ -148,7 +144,24 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
   const methods = useForm<CreateCustomer>({
     mode: 'onBlur',
     // control:control,
-    defaultValues: defaultValues,
+    defaultValues: {
+      name: "",
+      mail: "",
+      phone: "",
+      customerType: CustomerTypes.butcher,
+      address: "",
+      zipCode: "",
+      city: "",
+      country: "France",
+      image: [],
+      description: "",
+      officeHours: [
+        { day: OpeningDays.Lundi, startHour: "", endHour: "" },
+      ],
+      menu: [{ image: undefined, name: "", price: 0, description: "" }],
+      menuPriceUnit: "€",
+      createdBy: '656f23faeda3351e49d7c53c',
+    },
     resolver: yupResolver(customerSchema),
   });
   const { handleSubmit, register, watch, reset, control } = methods;
