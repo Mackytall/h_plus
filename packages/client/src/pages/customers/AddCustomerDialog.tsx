@@ -246,7 +246,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
   };
 
 
-  const onSubmit: SubmitHandler<CreateCustomer> = async (data: any) => {
+  const onSubmit = async (data: any) => {
     handleNext();
     if (activeStep === 2) {
     
