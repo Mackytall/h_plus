@@ -54,10 +54,10 @@ interface NavigationItem {
     const navigation: NavigationItem[] = [
       { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
       { name: 'Etablissement', href: '/customers', icon: UsersIcon, current: false },
-      { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-      { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-      { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
-      { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
+      // { name: 'Projects', href: '#', icon: FolderIcon, current: false },
+      // { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
+      // { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
+      // { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
     ];
   
     const teams: Team[] = [
@@ -229,7 +229,7 @@ interface NavigationItem {
                     ))}
                   </ul>
                 </li>
-                <li>
+                {/* <li>
                   <div className="text-xs font-semibold leading-6 text-gray-400">Your teams</div>
                   <ul role="list" className="-mx-2 mt-2 space-y-1">
                     {teams.map((team) => (
@@ -260,7 +260,7 @@ interface NavigationItem {
                     <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
                     Settings
                   </a>
-                </li>
+                </li> */}
               </ul>
             </nav>
           </div>

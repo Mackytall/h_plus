@@ -84,7 +84,24 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
         createdBy: fetchedCustomer.createdBy ?? '656f23faeda3351e49d7c53c',
       })
     } else {
-      reset()
+      reset({
+        name: "",
+        mail: "",
+        phone: "",
+        customerType: CustomerTypes.butcher,
+        address: "",
+        zipCode: "",
+        city: "",
+        country: "France",
+        image: [],
+        description: "",
+        officeHours: [
+          { day: OpeningDays.Lundi, startHour: "", endHour: "" },
+        ],
+        menu: [({ image: [] as File[], name: "", price: 0, description: "" }) as CreateCustomerMenu],
+        menuPriceUnit: "€",
+        createdBy: '656f23faeda3351e49d7c53c',
+      },)
     }
   }, [customerId, fetchedCustomer,])
 
