@@ -128,8 +128,8 @@ interface NavigationItem {
                     <div className="flex h-16 shrink-0 items-center">
                       <img
                         className="h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                        alt="Your Company"
+                        src="/logo.png"
+                        alt="H+"
                       />
                     </div>
                     <nav className="flex flex-1 flex-col">
@@ -154,7 +154,7 @@ interface NavigationItem {
                             ))}
                           </ul>
                         </li>
-                        <li>
+                        {/* <li>
                           <div className="text-xs font-semibold leading-6 text-gray-400">Your teams</div>
                           <ul role="list" className="-mx-2 mt-2 space-y-1">
                             {teams.map((team) => (
@@ -185,7 +185,7 @@ interface NavigationItem {
                             <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
                             Settings
                           </a>
-                        </li>
+                        </li> */}
                       </ul>
                     </nav>
                   </div>
@@ -203,7 +203,7 @@ interface NavigationItem {
               <img
                 className="h-16 w-auto"
                 src="/logo.png"
-                alt="Your Company"
+                alt="H+"
             
               />
             </div>
