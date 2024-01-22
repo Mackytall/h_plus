@@ -69,7 +69,7 @@ interface NavigationItem {
   
     const userNavigation: UserNavigationItem[] = [
       { name: 'Profil', href: '#', onClick: ()=>{} },
-      { name: 'Se déconnecter', href: '#' , onClick:logout},
+      { name: 'Se déconnecter', href: '/' , onClick:logout},
     ];
 
   return (
