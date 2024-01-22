@@ -4,6 +4,7 @@ import Customers from '../pages/customers/Customers';
 import Dashboard from '../pages/Dashboard';
 import Auth from '../pages/auth/Auth';
 import EditCustomer from '../pages/customers/EditCustomer';
+import PrivateRoute from './PrivateRoute';
 
 
 //import AdminRoute from './AdminRoute';
@@ -18,13 +19,15 @@ export type Route = {
 };
 
 export const routes: Route[] = [
-   {
+  {
     id: uniqid(),
     path: '/dashboard',
     component: (
-      <Wrapper>
-        <Dashboard/>
-      </Wrapper>
+      <PrivateRoute>
+        <Wrapper>
+          <Dashboard />
+        </Wrapper>
+      </PrivateRoute>
     ),
   },
   {
@@ -32,27 +35,31 @@ export const routes: Route[] = [
     path: '/login',
     component: (
       <Wrapper>
-        <Auth/>
+        <Auth />
       </Wrapper>
     ),
   },
- 
+
   {
     id: uniqid(),
     path: '/customers',
     component: (
-      <Wrapper>
-        <Customers/>
-      </Wrapper>
+      <PrivateRoute>
+        <Wrapper>
+          <Customers />
+        </Wrapper>
+      </PrivateRoute>
     ),
   },
   {
     id: uniqid(),
     path: '/customers/edit',
     component: (
-      <Wrapper>
-        <EditCustomer/>
-      </Wrapper>
+      <PrivateRoute>
+        <Wrapper>
+          <EditCustomer />
+        </Wrapper>
+      </PrivateRoute>
     ),
   },
 

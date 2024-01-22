@@ -34,13 +34,15 @@ function App() {
         <Suspense fallback={<Splash />}>
           <AuthProvider>
             <BrowserRouter>
-               <Sb>
-              <Routes>
-                {routes.map((route) => (
-                  <Route key={route.id} path={route.path} element={route.component} />
-                ))}
-              </Routes>
-              </Sb>
+            <Routes>
+        {routes.map((route) => (
+          <Route
+            key={route.id}
+            path={route.path}
+            element={route.path !== '/login' ? <Sb>{route.component}</Sb> : route.component}
+          />
+        ))}
+      </Routes>
             </BrowserRouter>
           </AuthProvider>
         </Suspense>

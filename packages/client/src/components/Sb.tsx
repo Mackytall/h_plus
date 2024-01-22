@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, SVGProps, useState } from 'react'
+import { Fragment, ReactNode, SVGProps, useContext, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
   Bars3Icon,
@@ -14,6 +14,10 @@ import {
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { useLocation } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
+import { UserContextType } from '../types/user';
+import { stringAvatar } from '../utils/funcs';
+import { Avatar } from '@mui/material';
 
 
 interface NavigationItem {
@@ -34,6 +38,7 @@ interface NavigationItem {
   interface UserNavigationItem {
     name: string;
     href: string;
+    onClick: () => void;
   }
   
   function classNames(...classes: (string | boolean)[]): string {
@@ -44,13 +49,9 @@ interface NavigationItem {
     children: ReactNode;
   }
   export default function Sb({ children}: ISbProps) {
+    const {user, logout} = useContext(AuthContext) as UserContextType
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [currentNavigation, setCurrentNavigation] = useState<NavigationItem['name']>();
-
-      const location = useLocation();
-  const authPaths = ["/login"]
-  const isAuthPage = authPaths.includes(location.pathname);
-  
     const navigation: NavigationItem[] = [
       { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
       { name: 'Etablissement', href: '/customers', icon: UsersIcon, current: false },
@@ -67,8 +68,8 @@ interface NavigationItem {
     ];
   
     const userNavigation: UserNavigationItem[] = [
-      { name: 'Your profile', href: '#' },
-      { name: 'Sign out', href: '#' },
+      { name: 'Profil', href: '#', onClick: ()=>{} },
+      { name: 'Se déconnecter', href: '#' , onClick:logout},
     ];
 
   return (
@@ -307,14 +308,17 @@ interface NavigationItem {
                 <Menu as="div" className="relative">
                   <Menu.Button className="-m-1.5 flex items-center p-1.5">
                     <span className="sr-only">Open user menu</span>
-                    <img
-                      className="h-8 w-8 rounded-full bg-gray-50"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
+                    <Avatar
+                    src= {user?.photo}
+                    alt="Remy Sharp"
+                    {...stringAvatar( `${user?.firstName} ${user?.lastName}`)} 
+
+                // sx={{ width: 100, height: 100 }}
+                />
+                    
                     <span className="hidden lg:flex lg:items-center">
                       <span className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-                        Tom Cook
+                        {user?.firstName} {user?.lastName}
                       </span>
                       <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
                     </span>
@@ -330,9 +334,10 @@ interface NavigationItem {
                   >
                     <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
                       {userNavigation.map((item) => (
-                        <Menu.Item key={item.name}>
+                        <Menu.Item key={item.name} >
                           {({ active }) => (
                             <a
+                            onClick={item.onClick}
                               href={item.href}
                               className={classNames(
                                 active ? 'bg-gray-50' : '',

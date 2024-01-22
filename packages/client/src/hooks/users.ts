@@ -36,7 +36,7 @@ export const useLogin = ({
   const queryClient = useQueryClient();
   const login = useMutation(
     ({ login }: { login: Login }) =>
-      fetchSecure<UserAuth>(`${usersUrl}/login`, {
+      fetchSecure<UserAuth>(`${usersUrl}/login/hplus`, {
         method: 'POST',
         body: JSON.stringify(login),
         throwOnError: true,

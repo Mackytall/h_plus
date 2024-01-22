@@ -131,7 +131,6 @@ const Customers = () => {
           indeterminate={selected.length > 0 && selected.length < customers.length}
           checked={customers.length > 0 && selected.length === customers.length}
           onClick={handleSelectAllClick}
-          
         />
                     </StyledTableCell>
             <StyledTableCell sx={{textAlign:"left"}}>Name</StyledTableCell>

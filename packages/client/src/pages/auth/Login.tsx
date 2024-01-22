@@ -1,5 +1,5 @@
 import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material';
+import { styled, Grid } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -9,6 +9,8 @@ import { UserContextType, UserRole } from '../../types/user';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PasswordInput from '../../components/PasswordInput';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 
 export interface ILoginProps {}
 
@@ -24,6 +26,8 @@ const Form = styled('form')(({ theme }) => ({
 }));
 
 const Login = (props: ILoginProps) => {
+  const isTabletOrMobile = useMediaQuery('(max-width: 960px)');
+
   const { login } = useContext(AuthContext) as UserContextType;
   const navigate = useNavigate();
   const {
@@ -37,15 +41,17 @@ const Login = (props: ILoginProps) => {
     try {
       const user = await login(data);
       console.log(user)
-      navigate("/customers")
+      navigate("/dashboard")
     } catch (error: any) {
       console.error(error);
-      console.log("eed")
     }
   };
 
   return (
-    <Paper elevation={6} sx={{ padding: '3rem 5rem', width: '50%',  }}>
+    <>
+    {
+      isTabletOrMobile ? (
+       <Grid   sx={{  minWidth:300  }}>
       <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
       <img src="logo.png" width="200" height="200" />
       </div>
@@ -88,10 +94,62 @@ const Login = (props: ILoginProps) => {
           <Button variant="contained" style={{backgroundColor:'#009A95'}} type="submit" fullWidth>
             Se connecter
           </Button>
-          <Button variant="text">Vous avez oublié votre mot de passe ?</Button>
+          <Button variant="text">Mot de passe oublié ?</Button>
+        </Form>
+      </FormProvider>
+    </Grid>
+    )
+: (
+  <Paper elevation={6} sx={{ padding: '3rem 5rem', width: '50%', minWidth:300  }}>
+      <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+      <img src="logo.png" width="200" height="200" />
+      </div>
+      <FormProvider
+        register={register}
+        formState={{ errors, ...restFormState }}
+        handleSubmit={handleSubmit}
+        {...rest}
+      >
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <TextField
+            {...register('username', {
+              required: { value: true, message: "Le nom d'utilisateur est obligatoire" },   
+            })}
+            error={!!errors.username}
+            helperText={errors.username && errors.username.message}
+            fullWidth
+            required
+            placeholder="Nom d'utilisateur"
+          />
+          <PasswordInput
+            color="primary"
+            defaultValue=""
+            fullWidth
+            id="password"
+            placeholder="Mot de passe"
+            variant="outlined"
+            name="password"
+            error={!!errors.password}
+            errorMessage={errors.password?.message}
+            required
+            options={{
+              required: { value: true, message: 'Le mot de passe est obligatoire' },
+              minLength: {
+                value: 6,
+                message: 'Le mot de passe doit contenir au moins 6 caractères',
+              },
+            }}
+          />
+          <Button variant="contained" style={{backgroundColor:'#009A95'}} type="submit" fullWidth>
+            Se connecter
+          </Button>
+          <Button variant="text">Mot de passe oublié ?</Button>
         </Form>
       </FormProvider>
     </Paper>
+)   }
+    </>
+    
   );
 };
 
