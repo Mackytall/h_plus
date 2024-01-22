@@ -39,7 +39,7 @@ function App() {
           <Route
             key={route.id}
             path={route.path}
-            element={route.path !== '/login' ? <Sb>{route.component}</Sb> : route.component}
+            element={route.path !== '/' ? <Sb>{route.component}</Sb> : route.component}
           />
         ))}
       </Routes>
