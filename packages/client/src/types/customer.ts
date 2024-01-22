@@ -51,7 +51,7 @@ type OfficeHours = {
     city: string;
     country: string;
     phone?: string;
-    mail:string;
+    mail?:string;
     officeHours?: OfficeHours[];
     detail?: CustomerDetail;
     menu?: CustomerMenu[];

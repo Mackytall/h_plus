@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -25,6 +25,8 @@ import { displayToast } from '../../helper/toastHelper';
 import CustomerMenuComponent from './CustomerMenuComponent';
 import Compressor from 'compressorjs';
 import { useParams } from 'react-router-dom';
+import { UserContextType } from '../../types/user';
+import { AuthContext } from '../../contexts/AuthContext';
 
 
 
@@ -52,6 +54,7 @@ interface IMenuFields {
 }
 
 const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }: IAddCustomerDialogProps) => {
+  const {user} = useContext(AuthContext) as UserContextType
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set<number>());
   const [isOfficeHoursAccordionOpen, setIsOfficeHoursAccordionOpen] = useState<boolean>(true)
@@ -81,7 +84,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
           { image: undefined, name: "", price: 0, description: "" }
         ]) as CreateCustomerMenu[],
         menuPriceUnit: fetchedCustomer.menuPriceUnit ?? "€",
-        createdBy: fetchedCustomer.createdBy ?? '656f23faeda3351e49d7c53c',
+        createdBy: fetchedCustomer.createdBy ?? '',
       })
     } else {
       reset({
@@ -100,7 +103,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
         ],
         menu: [({ image: [] as File[], name: "", price: 0, description: "" }) as CreateCustomerMenu],
         menuPriceUnit: "€",
-        createdBy: '656f23faeda3351e49d7c53c',
+        createdBy: '',
       },)
     }
   }, [customerId, fetchedCustomer,])
@@ -162,7 +165,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
       ],
       menu: [({ image: [] as File[], name: "", price: 0, description: "" }) as CreateCustomerMenu],
       menuPriceUnit: "€",
-      createdBy: '656f23faeda3351e49d7c53c',
+      createdBy: '',
     },
     resolver: yupResolver(customerSchema),
   });
@@ -296,11 +299,10 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
             menu: menu,
           }
           if(!isNew && customerId) {
-            console.log(customerData)
             await updateCustomer({customer:customerData, id:customerId })
           } else {
             await createCustomer({
-              customer: customerData
+              customer: {...customerData, createdBy: user ? user._id : ''}
             })
           }
         })
@@ -404,7 +406,6 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
                 <Grid item xs={12} md={6}>
                   <TextField
                     {...register("mail")}
-                    required
                     //error={!!errors.mail}
                     placeholder="Email"
                     variant="outlined"
@@ -651,7 +652,7 @@ const AddCustomerDialog = ({ handleCloseDialog, openDialog, isNew, customerId }:
                 <Box sx={{ flex: '1 1 auto' }} />
                 {isStepOptional(activeStep) && (
                   <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                    Sauter
+                    Ignorer
                   </Button>
                 )}
                 {activeStep === steps.length - 1 ?
