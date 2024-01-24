@@ -12,6 +12,8 @@ export interface IUser {
   deletedAt?: Date;
   createdAt:string;
   updatedAt: string;
+  createdBy: string;
+  updatedBy?: string;
 }
 
 export enum UserRole {
