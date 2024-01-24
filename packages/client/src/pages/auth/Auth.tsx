@@ -7,7 +7,7 @@ export interface IAuthProps {}
 
 const Auth = (props: IAuthProps) => {
   return ( 
-    <Grid container spacing={2} display="flex" justifyContent="center" alignItems="center" sx={{height:"80vh"}}>
+    <Grid container spacing={2} display="flex" justifyContent="center" alignItems="center" sx={{height:"100vh"}}>
       <Grid item xs={12}  display="flex" direction="column" alignItems="center">
      {/* <Signup /> */}
       <Login />

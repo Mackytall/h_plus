@@ -21,7 +21,7 @@ export const appTheme: Theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Manrope',
+    fontFamily: 'Poppins',
   },
 });
 
@@ -31,7 +31,7 @@ function App() {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={appTheme}>
-        <Suspense fallback={<Splash />}>
+       <Suspense fallback={<Splash />}>
           <AuthProvider>
             <BrowserRouter>
             <Routes>

@@ -59,12 +59,12 @@ export const labelizeUserRole = (label: UserRole): string => {
   switch (label) {
     case UserRole.admin:
       return 'Administrateur';
-    case UserRole.user:
-      return 'Utilisateur';
-    case UserRole.adherent:
-      return 'Adhérent';
-    case UserRole.student:
-      return 'Étudiant';
+    case UserRole.collab:
+      return 'Collaborateur';
+    case UserRole.responsible:
+      return 'Responsable établissement';
+      case UserRole.employee:
+        return 'Employée';
     default:
       return 'Utilisateur';
   }

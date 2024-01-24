@@ -1,5 +1,5 @@
 import Paper from '@mui/material/Paper';
-import { styled, Grid } from '@mui/material';
+import { styled, Grid, Typography, InputLabel, FormControl } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -10,12 +10,13 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PasswordInput from '../../components/PasswordInput';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 
 
 export interface ILoginProps {}
 
 type LoginForm = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -35,7 +36,7 @@ const Login = (props: ILoginProps) => {
     register,
     formState: { errors, ...restFormState },
     ...rest
-  } = useForm<LoginForm>({ mode: 'onBlur', defaultValues: { username: '', password: '' } });
+  } = useForm<LoginForm>({ mode: 'onBlur', defaultValues: { email: '', password: '' } });
 
   const onSubmit = async (data: LoginForm) => {
     try {
@@ -51,9 +52,9 @@ const Login = (props: ILoginProps) => {
     <>
     {
       isTabletOrMobile ? (
-       <Grid   sx={{  minWidth:300  }}>
-      <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-      <img src="logo.png" width="200" height="200" />
+       <Grid   sx={{  minWidth:300, }} >
+      <div style={{marginBottom: "1.5rem", display:"flex", flexDirection:"column",  justifyContent:"center", alignItems:"center"}}>
+      <img src="logo.png" width="180" height="180" />
       </div>
       <FormProvider
         register={register}
@@ -61,23 +62,30 @@ const Login = (props: ILoginProps) => {
         handleSubmit={handleSubmit}
         {...rest}
       >
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit)}        sx={{}}
+>
+        <FormControl fullWidth >
+        <Typography variant="body1" sx={{color:"#757575"}}>Email de connexion</Typography>
           <TextField
-            {...register('username', {
-              required: { value: true, message: "Le nom d'utilisateur est obligatoire" },   
+          id="outlined-basic"
+            {...register('email', {
+              required: { value: true, message: "Le mail est obligatoire" },   
             })}
-            error={!!errors.username}
-            helperText={errors.username && errors.username.message}
+            error={!!errors.email}
+            helperText={errors.email && errors.email.message}
             fullWidth
             required
-            placeholder="Nom d'utilisateur"
+            placeholder='exemple@gmail.com'
+           
           />
-          <PasswordInput
+        </FormControl>
+        <FormControl fullWidth >
+        <Typography variant="body1" sx={{color:"#757575"}}>Mot de passe</Typography>
+           <PasswordInput
             color="primary"
             defaultValue=""
             fullWidth
             id="password"
-            placeholder="Mot de passe"
             variant="outlined"
             name="password"
             error={!!errors.password}
@@ -91,18 +99,21 @@ const Login = (props: ILoginProps) => {
               },
             }}
           />
-          <Button variant="contained" style={{backgroundColor:'#009A95'}} type="submit" fullWidth>
+        </FormControl>
+         
+          <Button variant="contained" style={{margin:"auto", backgroundColor:'#009A95', width:"fit-content", borderRadius:"20px"}} type="submit"  endIcon={<ArrowRightAltIcon/>}>
             Se connecter
           </Button>
-          <Button variant="text">Mot de passe oublié ?</Button>
+          <Button variant="text" sx={{color:"black", textTransform:"none", fontSize:"16px", fontWeight:"400"}}>Mot de passe oublié </Button>
         </Form>
       </FormProvider>
     </Grid>
     )
 : (
-  <Paper elevation={6} sx={{ padding: '3rem 5rem', width: '50%', minWidth:300  }}>
-      <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-      <img src="logo.png" width="200" height="200" />
+  <Paper elevation={6} sx={{ padding: '1.9rem 5rem', width: '50%', minWidth:300, maxWidth:600  }}>
+      <div style={{marginBottom: "1.5rem", display:"flex", flexDirection:"column",  justifyContent:"center", alignItems:"center"}}>
+      <img src="logo.png" width="150" height="150" />
+      <Typography component="p" sx={{fontWeight:"bold", fontSize:"2rem"}}>Connexion</Typography>
       </div>
       <FormProvider
         register={register}
@@ -110,23 +121,29 @@ const Login = (props: ILoginProps) => {
         handleSubmit={handleSubmit}
         {...rest}
       >
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit)} >
+        <FormControl fullWidth >
+        <Typography variant="body1" sx={{color:"#757575"}}>Email de connexion</Typography>
           <TextField
-            {...register('username', {
-              required: { value: true, message: "Le nom d'utilisateur est obligatoire" },   
+          id="outlined-basic"
+            {...register('email', {
+              required: { value: true, message: "Le mail est obligatoire" },   
             })}
-            error={!!errors.username}
-            helperText={errors.username && errors.username.message}
+            error={!!errors.email}
+            helperText={errors.email && errors.email.message}
             fullWidth
             required
-            placeholder="Nom d'utilisateur"
+            placeholder='exemple@gmail.com'
+           
           />
-          <PasswordInput
+        </FormControl>
+        <FormControl fullWidth >
+        <Typography variant="body1" sx={{color:"#757575"}}>Mot de passe</Typography>
+           <PasswordInput
             color="primary"
             defaultValue=""
             fullWidth
             id="password"
-            placeholder="Mot de passe"
             variant="outlined"
             name="password"
             error={!!errors.password}
@@ -140,10 +157,12 @@ const Login = (props: ILoginProps) => {
               },
             }}
           />
-          <Button variant="contained" style={{backgroundColor:'#009A95'}} type="submit" fullWidth>
+        </FormControl>
+         
+          <Button variant="contained" style={{margin:"auto", backgroundColor:'#009A95', width:"fit-content", borderRadius:"20px"}} type="submit"  endIcon={<ArrowRightAltIcon/>}>
             Se connecter
           </Button>
-          <Button variant="text">Mot de passe oublié ?</Button>
+          <Button variant="text" sx={{color:"black", textTransform:"none", fontSize:"16px", fontWeight:"400"}}>Mot de passe oublié </Button>
         </Form>
       </FormProvider>
     </Paper>

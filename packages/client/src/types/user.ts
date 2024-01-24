@@ -15,12 +15,12 @@ export interface IUser {
 }
 
 export enum UserRole {
+  // sudo = 'sudo',
   admin = 'admin',
-  user = 'user',
-  adherent = 'adherent',
-  student = 'student',
+  collab = 'collab',
+  employee = 'employee',
+  responsible = 'responsible',
 }
-
 export type UserSignup = Omit<
   IUser,
   | '_id'
@@ -44,7 +44,7 @@ export type UpdateUser = Partial<
 };
 
 export type Login = {
-  username: string;
+  email: string;
   password: string;
 };
 

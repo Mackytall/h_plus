@@ -154,6 +154,9 @@ importers:
       '@fontsource/manrope':
         specifier: ^4.5.12
         version: 4.5.13
+      '@fontsource/poppins':
+        specifier: ^5.0.8
+        version: 5.0.8
       '@headlessui/react':
         specifier: ^1.7.17
         version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
@@ -2896,6 +2899,10 @@ packages:
 
   /@fontsource/manrope@4.5.13:
     resolution: {integrity: sha512-UFN5DMGBp8nFpwhPQXfpSbsEm4OVISqUKQy+rA+pb1zYGoH+OGN1woKEND8VLx+pC7rY3nrPRCJvSuuOaNdW7Q==}
+    dev: false
+
+  /@fontsource/poppins@5.0.8:
+    resolution: {integrity: sha512-P8owfYWluoUY5Nyzk4gT/L6LmLmseP6ezFWhj6VBUa5pRIdnCvNJpoQ6i/vhekjtJOfqX6nKlB+LCttoUl2GQQ==}
     dev: false
 
   /@headlessui/react@1.7.17(react-dom@18.2.0)(react@18.2.0):
