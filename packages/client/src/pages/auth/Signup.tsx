@@ -89,18 +89,10 @@ const Signup = (props: ISignupProps) => {
 
       const user = await signup(form);
       displayToast({ type: 'success', message: 'Connexion réussie', autoClose: 4000 });
-      switch (user.role) {
-        case UserRole.admin:
-          navigate('/admin');
-          break;
-        case UserRole.user:
+     
           navigate('/dashboard');
-          break;
-        default:
-          throw new Error(
-            'Oups ! Une erreur est survenue. Votre utilisateur ne contient pas de rôle, veuillez réessayer. Si le problème persiste veuillez prendre contact avec nous.'
-          );
-      }
+     
+      
     } catch (error) {
       showErrorMessage(error);
     } finally {
