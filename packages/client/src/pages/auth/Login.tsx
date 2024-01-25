@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import PasswordInput from '../../components/PasswordInput';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import { displayToast } from '../../helper/toastHelper';
 
 
 export interface ILoginProps {}
@@ -41,7 +42,6 @@ const Login = (props: ILoginProps) => {
   const onSubmit = async (data: LoginForm) => {
     try {
       const user = await login(data);
-      console.log(user)
       navigate("/dashboard")
     } catch (error: any) {
       console.error(error);
@@ -52,7 +52,7 @@ const Login = (props: ILoginProps) => {
     <>
     {
       isTabletOrMobile ? (
-       <Grid   sx={{  minWidth:300, }} >
+       <Grid   sx={{ width:"85%", }} >
       <div style={{marginBottom: "1.5rem", display:"flex", flexDirection:"column",  justifyContent:"center", alignItems:"center"}}>
       <img src="logo.png" width="180" height="180" />
       </div>
@@ -110,7 +110,7 @@ const Login = (props: ILoginProps) => {
     </Grid>
     )
 : (
-  <Paper elevation={6} sx={{ padding: '1.9rem 5rem', width: '50%', minWidth:300, maxWidth:600  }}>
+  <Paper elevation={6} sx={{ padding: '1.9rem 5rem', width: '50%', minWidth:300, maxWidth:550, borderRadius:"15px"}}>
       <div style={{marginBottom: "1.5rem", display:"flex", flexDirection:"column",  justifyContent:"center", alignItems:"center"}}>
       <img src="logo.png" width="150" height="150" />
       <Typography component="p" sx={{fontWeight:"bold", fontSize:"2rem"}}>Connexion</Typography>
@@ -125,7 +125,7 @@ const Login = (props: ILoginProps) => {
         <FormControl fullWidth >
         <Typography variant="body1" sx={{color:"#757575"}}>Email de connexion</Typography>
           <TextField
-          id="outlined-basic"
+          // id="outlined-basic"
             {...register('email', {
               required: { value: true, message: "Le mail est obligatoire" },   
             })}
@@ -134,7 +134,6 @@ const Login = (props: ILoginProps) => {
             fullWidth
             required
             placeholder='exemple@gmail.com'
-           
           />
         </FormControl>
         <FormControl fullWidth >
@@ -168,7 +167,6 @@ const Login = (props: ILoginProps) => {
     </Paper>
 )   }
     </>
-    
   );
 };
 
